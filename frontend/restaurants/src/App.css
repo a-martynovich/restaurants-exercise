@@ -46,9 +46,6 @@
 .restaurants-stars-span svg {
   padding-bottom: 2px;
 }
-.restaurants-login-btn {
-  pointer-events: none;
-}
 .pointer-none {
   pointer-events: none;
 }
