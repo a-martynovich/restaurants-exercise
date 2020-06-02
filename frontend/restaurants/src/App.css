@@ -1,5 +1,5 @@
 .restaurants-card {
-  /*max-width: 800px;*/
+  /*max-width: 600px;*/
 }
 .restaurants-stars-span {
 
@@ -9,4 +9,20 @@
 }
 .pointer-none {
   pointer-events: none;
+}
+.restaurant-card-img {
+  max-height: 5em;
+}
+.restaurants-review-name {
+  font-size: 12px;
+}
+.restaurants-review-avatar {
+    max-height: 100px;
+    max-width: 100px;
+}
+.restaurants-main {
+    min-height: 100vh;
+}
+.restaurants-review-username {
+    max-width: 100px;
 }
