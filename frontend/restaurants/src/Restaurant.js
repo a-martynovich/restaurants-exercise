@@ -4,51 +4,50 @@ import {faMapMarkerAlt} from "@fortawesome/free-solid-svg-icons";
 import DatePicker from "react-datepicker";
 import { useQuery } from 'react-query'
 
-import {Review} from "./Review";
+import {Reviews} from "./Reviews";
 import {Stars} from "./Stars";
 
 
-export function Restaurant() {
+export function Restaurant({id}) {
   const [startDate, setStartDate] = useState(null);
   const { status, data, error } = useQuery(
-    ['todos', { id: 1 }],
+    ['restaurant', { id }],
     async (key, {id}) => {
-      console.log(key, id);
-      return fetch('https://api.ipify.org/');
+      // console.log(key, id);
+      let d = await fetch('/restaurant.json');
+      let j = await d.json();
+      return j;
     }
   );
+
+  // console.log(status, data, error);
+  let disp_data = data;
+  if(status == 'loading') {
+    disp_data = {name: '', address: '', short_description: '', long_description: ''};
+  }
 
   return (
       <div className="card mb-3">
         {/*<img src="https://via.placeholder.com/150x70" className="card-img-top restaurant-card-img" alt="..." />*/}
         <div className="card-body">
           <p className="text-center mb-1">
-            <h3 className="card-title  d-inline-block mb-0">Restaurant Name</h3>
+            <h3 className="card-title  d-inline-block mb-0">{disp_data.name}</h3>
           </p>
 
           <small className="text-muted d-block mb-3 text-center">
             <FontAwesomeIcon icon={faMapMarkerAlt} color="red" className="mr-2"/>
-            15 Šetalište Kapetana Iva Vizina, Tivat
+            {disp_data.address}
           </small>
 
-          <p className="card-text">This is a wider card with supporting text below as a natural lead-in to additional
-            content. This content is a little bit longer.</p>
-          <p className="card-text">"Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium
-            doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto
-            beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut
-            fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam
-            est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi
-            tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis
-            nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur?
-            Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel
-            illum qui dolorem eum fugiat quo voluptas nulla pariatur?"</p>
+          <p className="card-text">{disp_data.short_description}</p>
+          <p className="card-text">{disp_data.long_description}</p>
 
           <div className="card mt-2">
             <h6 className="card-header">
               Reviews (0)
               <span className="restaurants-stars-span d-inline-block float-right flex-nowrap">
-                <Stars staticRating={4.0}/>
-                <span className="text-muted align-text-top pl-2 mt-1">4.0</span>
+                <Stars staticRating={disp_data.average_rating}/>
+                <span className="text-muted align-text-top pl-2 mt-1">{disp_data.average_rating}</span>
             </span>
             </h6>
             <div className="card-body p-0">
@@ -63,33 +62,7 @@ export function Restaurant() {
                   {/*  */}
                   {/*</div>*/}
 
-                  <Review comment={`
-                  This is a wider card with supporting text below as a natural lead-in to
-              additional content. This content is a little bit longer.
-              Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam
-              rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt
-              explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia
-              consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt.`}
-                  lastVisit={new Date().toLocaleDateString()}
-                  timestamp={new Date().toLocaleString()}
-                  userName="Artem"
-                  userHash="ec85fcb559b6101d45b406cae3b6f29a"
-                  rating={4}/>
-                  <Review comment={`
-                  This is a wider card with supporting text below as a natural lead-in to
-              additional content. This content is a little bit longer.
-              Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam
-              rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt
-              explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia
-              consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt.`}
-                  lastVisit={new Date().toLocaleDateString()}
-                  timestamp={new Date().toLocaleString()}
-                  userName="Artem"
-                  userHash="ec85fcb559b6101d45b406cae3b6f29a"
-                  ownerReplyComment="This is a wider card with supporting text below as a natural lead-in to
-                  additional content. This content is a little bit longer."
-                  ownerReplyTimestamp={new Date().toLocaleString()}
-                  rating={5}/>
+                  <Reviews restaurantId={id}/>
 
                 </div>
               </div>

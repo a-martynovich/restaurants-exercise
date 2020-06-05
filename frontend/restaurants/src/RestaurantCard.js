@@ -5,7 +5,7 @@ import React from "react";
 import {Stars} from "./Stars";
 
 
-export function RestaurantCard() {
+export function RestaurantCard({id, name, address, short_description, reviews_count, average_rating, onClick}) {
   return (
       <div className="card mb-3 shadow-sm restaurants-card">
         <div className="row">
@@ -15,23 +15,22 @@ export function RestaurantCard() {
           <div className="col-md">
             <div className="card-body pb-2">
               <h5 className="card-title d-inline-block">
-                <a href="" className="stretched-link">Restaurant Name</a>
+                <a href="#" className="stretched-link" onClick={onClick}>{name}</a>
               </h5>
               <span className="restaurants-stars-span d-inline-block float-right flex-nowrap">
-                <Stars staticRating={4.1}/>
-                <small className="text-muted align-text-top pl-2">4.1</small>
+                <Stars staticRating={average_rating}/>
+                <small className="text-muted align-text-top pl-2">{average_rating}</small>
               </span>
-              <p className="card-text text-justify">This is a wider card with supporting text below as a natural lead-in to
-                additional content. This content is a little bit longer.</p>
+              <p className="card-text text-justify">{short_description}</p>
               <hr className="mt-0 mb-1"/>
               <p className="card-text">
                 <small className="text-muted">
                   <FontAwesomeIcon icon={faMapMarkerAlt} color="red" className="mr-2"/>
-                  15 Šetalište Kapetana Iva Vizina, Tivat
+                  {address}
                 </small>
                 <small className="text-muted float-right pt-1">
                   <FontAwesomeIcon icon={faComment} className="mr-2" />
-                  0
+                  {reviews_count}
                 </small>
               </p>
             </div>

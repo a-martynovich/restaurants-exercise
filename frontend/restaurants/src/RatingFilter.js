@@ -19,7 +19,9 @@ export function RatingFilter() {
     console.log('selected', i);
     setExpanded(true);
   };
-  const onStarReset = (i) => {
+  const onStarReset = (e) => {
+    e.stopPropagation();
+    e.preventDefault();
     setExpanded(false);
     setRatingHover(false);
   };

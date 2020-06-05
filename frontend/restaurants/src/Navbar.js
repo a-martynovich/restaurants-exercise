@@ -5,11 +5,16 @@ import React from "react";
 import {RatingFilter} from "./RatingFilter";
 
 
-export function Navbar({backButtonVisible}) {
+export function Navbar({backButtonVisible, onBack}) {
   const ignoreClick = (e) => {
     e.stopPropagation();
     e.preventDefault();
     e.target.blur();
+  };
+  const onBackClick = (e) => {
+    e.stopPropagation();
+    e.preventDefault();
+    onBack();
   };
 
   return(
@@ -24,7 +29,7 @@ export function Navbar({backButtonVisible}) {
           <div className="container">
             <ul className="navbar-nav">
               <li className="nav-item" style={{visibility: backButtonVisible? "visible": "hidden"}}>
-                <a className="nav-link" href="">Back</a>
+                <a className="nav-link" href="" onClick={onBackClick}>Back</a>
               </li>
               <li className="nav-item flex-nowrap" style={{visibility: !backButtonVisible? "visible": "hidden"}}>
                 <RatingFilter/>

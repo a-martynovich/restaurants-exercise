@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faStar, faStarHalf} from "@fortawesome/free-solid-svg-icons";
 
@@ -10,9 +10,9 @@ export function Stars({staticRating, initialRating, onSelect}) {
     setRating(i+1);
   };
   const onHoverEnd = (e, i) => {
-    if(!isStatic) {
-      setRating(initialRating)
-    }
+    // if(!isStatic) {
+    //   setRating(initialRating)
+    // }
   };
   const getStar = (i, r, f) => {
     if(r > i) {
@@ -24,6 +24,11 @@ export function Stars({staticRating, initialRating, onSelect}) {
       return f("none");
     }
   };
+
+  useEffect(() => {
+    if(isStatic)
+      setRating(staticRating);
+  }, [isStatic, staticRating]);
 
   return (
       <>
