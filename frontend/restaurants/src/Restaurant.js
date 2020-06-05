@@ -2,6 +2,7 @@ import React, {useState} from "react";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faMapMarkerAlt} from "@fortawesome/free-solid-svg-icons";
 import DatePicker from "react-datepicker";
+import { useQuery } from 'react-query'
 
 import {Review} from "./Review";
 import {Stars} from "./Stars";
@@ -9,6 +10,13 @@ import {Stars} from "./Stars";
 
 export function Restaurant() {
   const [startDate, setStartDate] = useState(null);
+  const { status, data, error } = useQuery(
+    ['todos', { id: 1 }],
+    async (key, {id}) => {
+      console.log(key, id);
+      return fetch('https://api.ipify.org/');
+    }
+  );
 
   return (
       <div className="card mb-3">
@@ -55,8 +63,33 @@ export function Restaurant() {
                   {/*  */}
                   {/*</div>*/}
 
-                  <Review/>
-                  <Review/>
+                  <Review comment={`
+                  This is a wider card with supporting text below as a natural lead-in to
+              additional content. This content is a little bit longer.
+              Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam
+              rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt
+              explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia
+              consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt.`}
+                  lastVisit={new Date().toLocaleDateString()}
+                  timestamp={new Date().toLocaleString()}
+                  userName="Artem"
+                  userHash="ec85fcb559b6101d45b406cae3b6f29a"
+                  rating={4}/>
+                  <Review comment={`
+                  This is a wider card with supporting text below as a natural lead-in to
+              additional content. This content is a little bit longer.
+              Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam
+              rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt
+              explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia
+              consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt.`}
+                  lastVisit={new Date().toLocaleDateString()}
+                  timestamp={new Date().toLocaleString()}
+                  userName="Artem"
+                  userHash="ec85fcb559b6101d45b406cae3b6f29a"
+                  ownerReplyComment="This is a wider card with supporting text below as a natural lead-in to
+                  additional content. This content is a little bit longer."
+                  ownerReplyTimestamp={new Date().toLocaleString()}
+                  rating={5}/>
 
                 </div>
               </div>
