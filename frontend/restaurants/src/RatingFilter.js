@@ -1,6 +1,7 @@
 import React, {createRef, useState} from "react";
 
 import {Stars} from "./Stars";
+import {Nav} from "react-bootstrap";
 
 
 export function RatingFilter() {
@@ -27,19 +28,19 @@ export function RatingFilter() {
   };
 
   return (
-      <span className="nav-link" onMouseEnter={onMouseOver} onMouseLeave={onMouseOut} ref={spanRef}>
-        <a className="nav-link d-inline" href="">Rating: </a>
+      <Nav.Link as="span" onMouseEnter={onMouseOver} onMouseLeave={onMouseOut} ref={spanRef}>
+        <Nav.Link className="nav-link d-inline" href="">Rating: </Nav.Link>
         {!expanded &&
-          <a className={`text-light ${ratingHover? "d-none": "d-inline"}`} href="" tabIndex="-1"><u>All</u></a>
+          <a className={`text-light ${ratingHover? "d-none": "d-inline"}`} href="#" tabIndex="-1"><u>All</u></a>
         }
         {(ratingHover || expanded) &&
           <Stars initialRating={2} onSelect={onStarSelect}/>
         }
         {expanded &&
-          <a className="nav-link d-inline text-light text-sm-center" href="" tabIndex="-1" onClick={onStarReset}>
+          <Nav.Link className="d-inline text-light text-sm-center" href="" tabIndex="-1" onClick={onStarReset}>
             <u><small>Reset</small></u>
-          </a>
+          </Nav.Link>
         }
-      </span>
+      </Nav.Link>
   )
 }

@@ -1,48 +1,49 @@
 import React from "react";
 
 import {Stars} from "./Stars";
+import {Card, Col, Row} from "react-bootstrap";
 
 
 export function Review({rating, lastVisit, userName, userHash, timestamp, comment,
                        ownerReplyComment, ownerReplyTimestamp}) {
   return (
-    <div className="card border-left-0 border-right-0 border-top-0">
-      <div className="row no-gutters">
-        <div className="col-md-2 pl-3 pt-3 mr-3">
+    <Card className="border-left-0 border-right-0 border-top-0">
+      <Row noGutters>
+        <Col md={2} className="pl-3 pt-3 mr-3">
           <img src={`https://www.gravatar.com/avatar/${userHash}?s=100`}
                className="card-img restaurants-review-avatar"/>
           <p className="text-center restaurants-review-username"><small>{userName}</small></p>
-        </div>
-        <div className="col-md">
-          <div className="card-body">
+        </Col>
+        <Col md>
+          <Card.Body>
             <span className="align-top flex-nowrap">
               <Stars staticRating={rating}/>
               <small className="float-right"><b>Last Visit:</b> {lastVisit}</small>
             </span>
-            <p className="card-text mb-1"><small>
+            <Card.Text className="mb-1"><small>
               {comment}
-            </small></p>
-            <p className="card-text align-bottom mb-0">
+            </small></Card.Text>
+            <Card.Text className="align-bottom mb-0">
               <small className="text-muted">{timestamp}</small>
-            </p>
+            </Card.Text>
 
             <div className={`${ownerReplyComment? "": "d-none"} mt-2`}>
-              <p className="card-text ml-5 mb-0">
+              <Card.Text className="ml-5 mb-0">
                 <small><b>Owner Reply</b></small>
-              </p>
-              <p className="card-text ml-5 mb-1">
+              </Card.Text>
+              <Card.Text className="ml-5 mb-1">
                 <small>
                   {ownerReplyComment}
                 </small>
-              </p>
-              <p className="card-text align-bottom ml-5 mb-0">
+              </Card.Text>
+              <Card.Text className="align-bottom ml-5 mb-0">
                 <small className="text-muted">{ownerReplyTimestamp}</small>
-              </p>
+              </Card.Text>
             </div>
-          </div>
-        </div>
-      </div>
-    </div>
+          </Card.Body>
+        </Col>
+      </Row>
+    </Card>
   )
 }
 

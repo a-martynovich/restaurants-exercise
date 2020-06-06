@@ -6,6 +6,7 @@ import { useQuery } from 'react-query'
 
 import {Reviews} from "./Reviews";
 import {Stars} from "./Stars";
+import {Card, Row, Col, Form, FormGroup, Button} from "react-bootstrap";
 
 
 export function Restaurant({id}) {
@@ -27,11 +28,11 @@ export function Restaurant({id}) {
   }
 
   return (
-      <div className="card mb-3">
+      <Card className="mb-3">
         {/*<img src="https://via.placeholder.com/150x70" className="card-img-top restaurant-card-img" alt="..." />*/}
-        <div className="card-body">
+        <Card.Body>
           <p className="text-center mb-1">
-            <h3 className="card-title  d-inline-block mb-0">{disp_data.name}</h3>
+            <Card.Title as="h3" className="d-inline-block mb-0">{disp_data.name}</Card.Title>
           </p>
 
           <small className="text-muted d-block mb-3 text-center">
@@ -39,61 +40,51 @@ export function Restaurant({id}) {
             {disp_data.address}
           </small>
 
-          <p className="card-text">{disp_data.short_description}</p>
-          <p className="card-text">{disp_data.long_description}</p>
+          <Card.Text>{disp_data.short_description}</Card.Text>
+          <Card.Text>{disp_data.long_description}</Card.Text>
 
-          <div className="card mt-2">
-            <h6 className="card-header">
+          <Card className="mt-2">
+            <Card.Header>
               Reviews (0)
               <span className="restaurants-stars-span d-inline-block float-right flex-nowrap">
                 <Stars staticRating={disp_data.average_rating}/>
-                <span className="text-muted align-text-top pl-2 mt-1">{disp_data.average_rating}</span>
+                <span className="text-muted pl-2">{disp_data.average_rating}</span>
             </span>
-            </h6>
-            <div className="card-body p-0">
-              <div className="row row-cols-1 no-gutters">
-                <div className="col-md">
-
-                  {/*<div className="row">*/}
-                  {/*  <div className="col-md-1">*/}
-                  {/*      <img src="https://www.gravatar.com/avatar/ec85fcb559b6101d45b406cae3b6f29a?s=100" className="card-img" />*/}
-                  {/*      <small className="text-nowrap">Artem Martynovich</small>*/}
-                  {/*  </div>*/}
-                  {/*  */}
-                  {/*</div>*/}
-
+            </Card.Header>
+            <Card.Body className="p-0">
+              <Row noGutters>
+                <Col md>
                   <Reviews restaurantId={id}/>
+                </Col>
+              </Row>
+            </Card.Body>
+          </Card>
 
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div className="card mt-2">
-            <h6 className="card-header">
+          <Card className="mt-2">
+            <Card.Header as="h6">
               Add Review
-            </h6>
-            <div className="card-body">
-              <div className="row mb-2">
-                <div className="col">
+            </Card.Header>
+            <Card.Body>
+              <Row className="mb-2">
+                <Col>
                   <span className="d-flex flex-nowrap d-inline-flex mr-2">
                     <Stars />
                   </span>
                   <DatePicker selected={startDate} onChange={date => setStartDate(date)}
                                           todayButton="Today" placeholderText="Last visit date" maxDate={new Date()}
                                           className="form-control border-primary d-inline-flex"/>
-                </div>
-              </div>
-              <div className="row container">
-                <div className="form-group w-100">
+                </Col>
+              </Row>
+              <Row className="container">
+                <Form.Group className="w-100">
                   {/*<label htmlFor="exampleFormControlTextarea1">Review:</label>*/}
-                  <textarea className="form-control w-100 border-primary" id="exampleFormControlTextarea1" rows="3" placeholder="Tell us what you think"/>
-                </div>
-              </div>
-              <button className="btn btn-primary" type="submit">Submit review</button>
-            </div>
-          </div>
-        </div>
-      </div>
+                  <Form.Control as="textarea" className="w-100 border-primary" rows="3" placeholder="Tell us what you think"/>
+                </Form.Group>
+              </Row>
+              <Button variant="primary" type="submit">Submit review</Button>
+            </Card.Body>
+          </Card>
+        </Card.Body>
+      </Card>
   );
 }

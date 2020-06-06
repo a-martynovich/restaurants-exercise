@@ -3,27 +3,28 @@ import {faComment, faMapMarkerAlt} from "@fortawesome/free-solid-svg-icons";
 import React from "react";
 
 import {Stars} from "./Stars";
+import {Card, Col, Row} from "react-bootstrap";
 
 
 export function RestaurantCard({id, name, address, short_description, reviews_count, average_rating, onClick}) {
   return (
-      <div className="card mb-3 shadow-sm restaurants-card">
-        <div className="row">
+      <Card className="mb-3 shadow-sm restaurants-card">
+        <Row>
           {/*<div className="col-md-4">*/}
           {/*  <img src="https://via.placeholder.com/150x70" className="card-img" alt="..." />*/}
           {/*</div>*/}
-          <div className="col-md">
-            <div className="card-body pb-2">
-              <h5 className="card-title d-inline-block">
+          <Col md>
+            <Card.Body className="pb-2">
+              <Card.Title as="h5" className="d-inline-block">
                 <a href="#" className="stretched-link" onClick={onClick}>{name}</a>
-              </h5>
+              </Card.Title>
               <span className="restaurants-stars-span d-inline-block float-right flex-nowrap">
                 <Stars staticRating={average_rating}/>
                 <small className="text-muted align-text-top pl-2">{average_rating}</small>
               </span>
-              <p className="card-text text-justify">{short_description}</p>
+              <Card.Text className="text-justify">{short_description}</Card.Text>
               <hr className="mt-0 mb-1"/>
-              <p className="card-text">
+              <Card.Text className="card-text">
                 <small className="text-muted">
                   <FontAwesomeIcon icon={faMapMarkerAlt} color="red" className="mr-2"/>
                   {address}
@@ -32,11 +33,11 @@ export function RestaurantCard({id, name, address, short_description, reviews_co
                   <FontAwesomeIcon icon={faComment} className="mr-2" />
                   {reviews_count}
                 </small>
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
+              </Card.Text>
+            </Card.Body>
+          </Col>
+        </Row>
+      </Card>
   );
 }
 

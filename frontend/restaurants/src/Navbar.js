@@ -3,9 +3,10 @@ import {faSignOutAlt, faUser} from "@fortawesome/free-solid-svg-icons";
 import React from "react";
 
 import {RatingFilter} from "./RatingFilter";
+import {Button, ButtonGroup, Container, Nav, Navbar, OverlayTrigger, Tooltip} from "react-bootstrap";
 
 
-export function Navbar({backButtonVisible, onBack}) {
+export function NavBar({backButtonVisible, onBack}) {
   const ignoreClick = (e) => {
     e.stopPropagation();
     e.preventDefault();
@@ -16,38 +17,39 @@ export function Navbar({backButtonVisible, onBack}) {
     e.preventDefault();
     onBack();
   };
+  const onLogout = (e) => {
+
+  };
 
   return(
-      <nav className="navbar rounded navbar-expand-sm sticky-top navbar-dark bg-secondary shadow">
-        <a className="navbar-brand" href="">Restaurants</a>
-        <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
-                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-          <span className="navbar-toggler-icon" />
-        </button>
-
-        <div className="collapse navbar-collapse" id="navbarSupportedContent">
-          <div className="container">
-            <ul className="navbar-nav">
-              <li className="nav-item" style={{visibility: backButtonVisible? "visible": "hidden"}}>
-                <a className="nav-link" href="" onClick={onBackClick}>Back</a>
-              </li>
-              <li className="nav-item flex-nowrap" style={{visibility: !backButtonVisible? "visible": "hidden"}}>
+      <Navbar expand="sm" className="rounded sticky-top bg-secondary shadow" variant="dark" size="sm">
+        <Navbar.Brand>Restaurants</Navbar.Brand>
+        <Navbar.Toggle/>
+        <Navbar.Collapse>
+          <Container>
+            <Nav>
+              <Nav.Item style={{visibility: backButtonVisible? "visible": "hidden"}}>
+                <Nav.Link onClick={onBackClick}>Back</Nav.Link>
+              </Nav.Item>
+              <Nav.Item className="flex-nowrap" style={{visibility: !backButtonVisible? "visible": "hidden"}}>
                 <RatingFilter/>
-              </li>
-            </ul>
-          </div>
-          <div className="btn-group" role="group">
-            <button type="button" className="btn btn-sm btn-outline-light text-nowrap restaurants-login-btn"
-                    data-toggle="tooltip" data-placement="bottom" title="Visitor" tabIndex="-1" onClick={ignoreClick}>
-              <FontAwesomeIcon icon={faUser} className="mr-3"/>
-              Artem Martynovich
-            </button>
-            <button type="button" className="btn btn-sm btn-outline-light text-nowrap"
-                    data-toggle="tooltip" data-placement="bottom" title="Log Out">
-              <FontAwesomeIcon icon={faSignOutAlt} />
-            </button>
-          </div>
-        </div>
-      </nav>
+              </Nav.Item>
+            </Nav>
+          </Container>
+          <ButtonGroup>
+            <OverlayTrigger overlay={<Tooltip id="tooltip-user">Visitor</Tooltip>} placement="bottom">
+              <Button variant="outline-light" size="sm" className="text-nowrap restaurants-login-btn" onClick={ignoreClick}>
+                <FontAwesomeIcon icon={faUser} className="mr-3"/>
+                Artem Martynovich
+              </Button>
+            </OverlayTrigger>
+            <OverlayTrigger overlay={<Tooltip id="tooltip-user">Log Out</Tooltip>} placement="bottom" onClick={onLogout}>
+              <Button size="sm" variant="outline-light" className="text-nowrap">
+                <FontAwesomeIcon icon={faSignOutAlt} />
+              </Button>
+            </OverlayTrigger>
+          </ButtonGroup>
+        </Navbar.Collapse>
+      </Navbar>
   );
 }

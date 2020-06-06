@@ -1,8 +1,9 @@
 import './App.css';
 
 import React, {createRef, useEffect, useState} from 'react';
+import {Row, Col, Container} from 'react-bootstrap'
 
-import {Navbar} from './Navbar'
+import {NavBar} from './Navbar'
 import {Restaurant} from "./Restaurant";
 import {RestaurantList} from "./RestaurantList";
 
@@ -12,15 +13,15 @@ function App() {
   const onCardSelect = (id) => setCard(id);
 
   return (
-    <div className="restaurants-main container bg-white">
-      <Navbar backButtonVisible={card !== null} onBack={() => setCard(null)}/>
+    <Container className="restaurants-main bg-white" as="div">
+      <NavBar backButtonVisible={card !== null} onBack={() => setCard(null)}/>
 
-      <div className="justify-content-center mt-3 row">
-        <div className="col col-md-9">
+      <Row className="justify-content-center mt-3">
+        <Col className="col-md-9">
           {card===null? <RestaurantList onSelect={onCardSelect}/> : <Restaurant id={card}/>}
-        </div>
-      </div>
-    </div>
+        </Col>
+      </Row>
+    </Container>
   );
 }
 
