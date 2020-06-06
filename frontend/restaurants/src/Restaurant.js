@@ -4,13 +4,14 @@ import {faMapMarkerAlt} from "@fortawesome/free-solid-svg-icons";
 import DatePicker from "react-datepicker";
 import { useQuery } from 'react-query'
 
+import {Card, Row, Col, Form, FormGroup, Button} from "react-bootstrap";
+
+import {AddReview} from "./AddReview";
 import {Reviews} from "./Reviews";
 import {Stars} from "./Stars";
-import {Card, Row, Col, Form, FormGroup, Button} from "react-bootstrap";
 
 
 export function Restaurant({id}) {
-  const [startDate, setStartDate] = useState(null);
   const { status, data, error } = useQuery(
     ['restaurant', { id }],
     async (key, {id}) => {
@@ -45,7 +46,7 @@ export function Restaurant({id}) {
 
           <Card className="mt-2">
             <Card.Header>
-              Reviews (0)
+              Reviews ({disp_data.reviews_count})
               <span className="restaurants-stars-span d-inline-block float-right flex-nowrap">
                 <Stars staticRating={disp_data.average_rating}/>
                 <span className="text-muted pl-2">{disp_data.average_rating}</span>
@@ -65,23 +66,7 @@ export function Restaurant({id}) {
               Add Review
             </Card.Header>
             <Card.Body>
-              <Row className="mb-2">
-                <Col>
-                  <span className="d-flex flex-nowrap d-inline-flex mr-2">
-                    <Stars />
-                  </span>
-                  <DatePicker selected={startDate} onChange={date => setStartDate(date)}
-                                          todayButton="Today" placeholderText="Last visit date" maxDate={new Date()}
-                                          className="form-control border-primary d-inline-flex"/>
-                </Col>
-              </Row>
-              <Row className="container">
-                <Form.Group className="w-100">
-                  {/*<label htmlFor="exampleFormControlTextarea1">Review:</label>*/}
-                  <Form.Control as="textarea" className="w-100 border-primary" rows="3" placeholder="Tell us what you think"/>
-                </Form.Group>
-              </Row>
-              <Button variant="primary" type="submit">Submit review</Button>
+              <AddReview/>
             </Card.Body>
           </Card>
         </Card.Body>

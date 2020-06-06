@@ -17,9 +17,9 @@ export function Review({rating, lastVisit, userName, userHash, timestamp, commen
         <Col md>
           <Card.Body>
             <span className="align-top flex-nowrap">
-              <Stars staticRating={rating}/>
-              <small className="float-right"><b>Last Visit:</b> {lastVisit}</small>
+              <small><Stars staticRating={rating}/></small>
             </span>
+            <small className="float-right mt-1"><b>Last Visit:</b> {lastVisit}</small>
             <Card.Text className="mb-1"><small>
               {comment}
             </small></Card.Text>
