@@ -10,9 +10,9 @@ export function Stars({staticRating, initialRating, onSelect}) {
     setRating(i+1);
   };
   const onHoverEnd = (e, i) => {
-    // if(!isStatic) {
-    //   setRating(initialRating)
-    // }
+    if(!isStatic) {
+      setRating(initialRating)
+    }
   };
   const getStar = (i, r, f) => {
     if(r > i) {
@@ -28,7 +28,9 @@ export function Stars({staticRating, initialRating, onSelect}) {
   useEffect(() => {
     if(isStatic)
       setRating(staticRating);
-  }, [isStatic, staticRating]);
+    else
+      setRating(initialRating);
+  }, [isStatic, staticRating, initialRating]);
 
   return (
       <>

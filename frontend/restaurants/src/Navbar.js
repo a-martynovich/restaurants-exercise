@@ -6,7 +6,7 @@ import {RatingFilter} from "./RatingFilter";
 import {Button, ButtonGroup, Container, Nav, Navbar, OverlayTrigger, Tooltip} from "react-bootstrap";
 
 
-export function NavBar({backButtonVisible, onBack}) {
+export function NavBar({backButtonVisible, onBack, loggedIn}) {
   const ignoreClick = (e) => {
     e.stopPropagation();
     e.preventDefault();
@@ -25,7 +25,7 @@ export function NavBar({backButtonVisible, onBack}) {
       <Navbar expand="sm" className="rounded sticky-top bg-secondary shadow" variant="dark" size="sm">
         <Navbar.Brand>Restaurants</Navbar.Brand>
         <Navbar.Toggle/>
-        <Navbar.Collapse>
+        {loggedIn && <Navbar.Collapse>
           <Container>
             <Nav>
               <Nav.Item style={{visibility: backButtonVisible? "visible": "hidden"}}>
@@ -49,7 +49,7 @@ export function NavBar({backButtonVisible, onBack}) {
               </Button>
             </OverlayTrigger>
           </ButtonGroup>
-        </Navbar.Collapse>
+        </Navbar.Collapse>}
       </Navbar>
   );
 }

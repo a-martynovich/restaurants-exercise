@@ -1,14 +1,14 @@
-import React from "react";
+import React, {useContext, useState} from "react";
 
 import {RestaurantCard} from "./RestaurantCard";
 import {useQuery} from "react-query";
 
 
-export function RestaurantList({onSelect}) {
+export function RestaurantList({onSelect, rating}) {
     const { status, data, error } = useQuery(
-    ['restaurants', {} ],
+    ['restaurants', {rating} ],
     async (key) => {
-      // console.log(key, id);
+      console.log(key, rating);
       let d = await fetch('/restaurants.json');
       let j = await d.json();
       return j;
@@ -35,3 +35,5 @@ export function RestaurantList({onSelect}) {
     </>
   );
 }
+
+

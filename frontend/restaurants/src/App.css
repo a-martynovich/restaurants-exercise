@@ -26,3 +26,6 @@
 .restaurants-review-username {
     max-width: 100px;
 }
+.restaurants-login-row {
+    min-height: 60vh;
+}
