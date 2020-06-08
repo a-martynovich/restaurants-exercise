@@ -29,3 +29,8 @@
 .restaurants-login-row {
     min-height: 60vh;
 }
+.restaurants-edit-icon {
+    position: absolute;
+    top: 1em;
+    right: 1em;
+}

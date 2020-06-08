@@ -1,6 +1,6 @@
-import React, {useState} from "react";
+import React, {useContext, useState} from "react";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faMapMarkerAlt} from "@fortawesome/free-solid-svg-icons";
+import {faEdit, faMapMarkerAlt} from "@fortawesome/free-solid-svg-icons";
 import DatePicker from "react-datepicker";
 import { useQuery } from 'react-query'
 
@@ -9,9 +9,12 @@ import {Card, Row, Col, Form, FormGroup, Button} from "react-bootstrap";
 import {AddReview} from "./AddReview";
 import {Reviews} from "./Reviews";
 import {Stars} from "./Stars";
+import {LoginContext} from "./Login"
+import {EditIcon} from "./EditIcon";
 
 
 export function Restaurant({id}) {
+  const ctx = useContext(LoginContext);
   const { status, data, error } = useQuery(
     ['restaurant', { id }],
     async (key, {id}) => {
@@ -42,7 +45,9 @@ export function Restaurant({id}) {
           </small>
 
           <Card.Text>{disp_data.short_description}</Card.Text>
-          <Card.Text>{disp_data.long_description}</Card.Text>
+          <Card.Text>{disp_data.long_description}
+            <EditIcon className="text-center pl-2 small d-inline"/>
+          </Card.Text>
 
           <Card className="mt-2">
             <Card.Header>
@@ -61,6 +66,7 @@ export function Restaurant({id}) {
             </Card.Body>
           </Card>
 
+          {ctx.role == 'user' &&
           <Card className="mt-2">
             <Card.Header as="h6">
               Add Review
@@ -68,7 +74,7 @@ export function Restaurant({id}) {
             <Card.Body>
               <AddReview/>
             </Card.Body>
-          </Card>
+          </Card>}
         </Card.Body>
       </Card>
   );

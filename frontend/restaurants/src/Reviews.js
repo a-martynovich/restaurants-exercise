@@ -1,8 +1,10 @@
 import {Review} from "./Review";
-import React from "react";
+import React, {useContext} from "react";
 import {useQuery} from "react-query";
+import {LoginContext} from "./Login";
 
 export function Reviews({restaurantId}) {
+  const ctx = useContext(LoginContext);
   const { status, data, error } = useQuery(
     ['reviews', { id: restaurantId }],
     async (key, {id}) => {
@@ -26,6 +28,7 @@ export function Reviews({restaurantId}) {
             ownerReplyComment={r.ownerReplyComment}
             ownerReplyTimestamp={r.ownerReplyTimestamp}
             key={r.id}
+            isOwner={ctx.role=='owner'}
         />)}
       </>
   )

@@ -40,7 +40,7 @@ export function RatingFilter({onSelect}) {
   // console.log(`RATING: ${rating} ctx: ${setFilterRating}`);
   return (
       <Nav.Link as="span" onMouseEnter={onMouseOver} onMouseLeave={onMouseOut} ref={spanRef}>
-        <Nav.Link className="nav-link d-inline" href="">Rating: </Nav.Link>
+        <Nav.Link className="nav-link d-inline" active={expanded} href="">Rating: </Nav.Link>
         {!expanded &&
         <a className={`text-light ${ratingHover ? "d-none" : "d-inline"}`} href="#" tabIndex="-1"><u>All</u></a>
         }
