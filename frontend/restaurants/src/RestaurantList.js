@@ -26,6 +26,7 @@ export function RestaurantList({onSelect, rating}) {
     <>
       {cards.map(c => <RestaurantCard
       onClick={(e) => onClick(e, c.id)}
+      key={c.id}
       id={c.id}
       name={c.name}
       address={c.address}

@@ -3,8 +3,14 @@ import {Row, Col, Container, Card, Button, InputGroup, FormControl} from 'react-
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faAt, faKey} from "@fortawesome/free-solid-svg-icons";
 
+export const LoginContext = React.createContext();
 
-export function Login() {
+
+export function Login({onSignUp, onSuccess}) {
+  useEffect(() => {
+    // onSuccess();
+  });
+
   return (
     <Col className="col-lg-4 col-md-6 align-self-end">
       <Card className="bg-light align-middle shadow rounded-lg">
@@ -13,7 +19,7 @@ export function Login() {
           <hr/>
           <form method="post">
             <InputGroup className="mb-3">
-              <FormControl type="email" placeholder="E-Mail" required/>
+              <FormControl type="email" placeholder="E-Mail" required autoComplete="email"/>
               <InputGroup.Append>
                 <InputGroup.Text id="basic-addon1">
                   <FontAwesomeIcon icon={faAt}/>
@@ -21,7 +27,7 @@ export function Login() {
               </InputGroup.Append>
             </InputGroup>
             <InputGroup className="mb-3">
-              <FormControl type="password" placeholder="Password" required/>
+              <FormControl type="password" placeholder="Password" required autoComplete="current-password"/>
               <InputGroup.Append>
                 <InputGroup.Text id="basic-addon1">
                   <FontAwesomeIcon icon={faKey}/>
@@ -30,8 +36,8 @@ export function Login() {
             </InputGroup>
             <hr />
 
-            <Button type="submit" variant="primary" className="mr-1">Log In</Button>
-            <Button variant="secondary">Sign Up</Button>
+            <Button type="submit" variant="primary" className="mr-1" onClick={onSuccess}>Log In</Button>
+            <Button variant="secondary" onClick={onSignUp}>Sign Up</Button>
 
           </form>
         </Card.Body>

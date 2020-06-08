@@ -1,14 +1,16 @@
 import './App.css';
 
-import React, {createRef, useEffect, useState} from 'react';
+import React, {createRef, useContext, useEffect, useState} from 'react';
 import {Row, Col, Container} from 'react-bootstrap'
 
 import {NavBar} from './Navbar'
 import {Restaurant} from "./Restaurant";
 import {RestaurantList} from "./RestaurantList";
 import {FilterContext} from "./RatingFilter";
-import {Login} from "./Login"
+import {Login, LoginContext} from "./Login"
 import {SignUp} from "./SignUp";
+
+
 
 
 function RestaurantApp() {
@@ -31,13 +33,19 @@ function RestaurantApp() {
   );
 }
 
-function Credentials() {
+function Credentials({onLogIn}) {
+  const [showSignUp, setShowSignUp] = useState(false);
+  const onShowSignUp = () => setShowSignUp(true);
+  const onBack = () => setShowSignUp(false);
+  const onSignUp = () => {};
+  const ctx = useContext(LoginContext);
+
   return (
       <Container className="restaurants-main bg-white" as="div">
         <NavBar />
         <Row className="justify-content-center restaurants-login-row">
-          <Login />
-          {/*<SignUp/>*/}
+          {/*<SignUp onBack={onBack}/>*/}
+          {showSignUp? <SignUp onBack={onBack} />: <Login onSignUp={onShowSignUp} onSuccess={() => ctx.logIn()}/>}
         </Row>
       </Container>
   );
@@ -46,7 +54,16 @@ function Credentials() {
 function App() {
   const [loggedIn, setLoggedIn] = useState(false);
   return (
-      loggedIn? <RestaurantApp /> : <Credentials/>
+      <LoginContext.Provider value={{
+        loggedIn: loggedIn,
+        role: "owner",
+        roleName: "Visitor",
+        name: "Artem Martynovich",
+        logOut: () => {setLoggedIn(false)},
+        logIn: () => {setLoggedIn(true)}
+      }}>
+        {loggedIn? <RestaurantApp /> : <Credentials onLogIn={() => setLoggedIn(true)}/>}
+      </LoginContext.Provider>
   );
 }
 

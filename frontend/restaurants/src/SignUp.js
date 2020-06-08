@@ -4,7 +4,7 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faAt, faKey} from "@fortawesome/free-solid-svg-icons";
 
 
-export function SignUp() {
+function SignUpDialog({onBack, onSignupClick}) {
   return (
     <Col className="col-lg-5 col-md-8 align-self-end">
       <Card className="bg-light align-middle shadow rounded-lg">
@@ -13,9 +13,11 @@ export function SignUp() {
           <hr/>
           <form method="post" >
             <Form.Row className="mb-3">
-              <Form.Label column lg={2}>
-                Role:
-              </Form.Label>
+              <Col md={3} lg={3} sm={3} className="text-nowrap">
+                <Form.Label column lg={2}>
+                  Role:
+                </Form.Label>
+              </Col>
               <Col>
                 <Form.Control as="select">
                   <option>Visitor</option>
@@ -34,7 +36,7 @@ export function SignUp() {
             </Form.Row>
             <Form.Row>
               <InputGroup className="mb-3">
-                <Form.Control type="email" placeholder="E-Mail" required/>
+                <Form.Control type="email" placeholder="E-Mail" required autoComplete="email"/>
                 <InputGroup.Append>
                   <InputGroup.Text id="basic-addon1">
                     <FontAwesomeIcon icon={faAt}/>
@@ -45,7 +47,7 @@ export function SignUp() {
             <Form.Row>
               <Col className="p-0 pr-2">
                 <InputGroup className="mb-1">
-                  <Form.Control type="password" placeholder="Password" required/>
+                  <Form.Control type="password" placeholder="Password" required autoComplete="new-password"/>
                   <InputGroup.Append>
                     <InputGroup.Text id="basic-addon1">
                       <FontAwesomeIcon icon={faKey}/>
@@ -55,7 +57,7 @@ export function SignUp() {
               </Col>
               <Col className="p-0">
                 <InputGroup className="mb-1">
-                  <Form.Control type="password" placeholder="Repeat Password" required/>
+                  <Form.Control type="password" placeholder="Repeat Password" required autoComplete="new-password"/>
                   <InputGroup.Append>
                     <InputGroup.Text id="basic-addon1">
                       <FontAwesomeIcon icon={faKey} color="blue"/>
@@ -66,12 +68,44 @@ export function SignUp() {
             </Form.Row>
             <hr />
 
-            <Button type="submit" variant="primary" className="mr-1">Sign Up</Button>
-            <Button variant="secondary">Back</Button>
+            <Button type="submit" variant="primary" className="mr-1" onClick={onSignupClick}>Sign Up</Button>
+            <Button variant="secondary" onClick={onBack}>Back</Button>
 
           </form>
         </Card.Body>
       </Card>
     </Col>
   )
+}
+
+function SignUpSuccess({needApproval}) {
+  return (
+      <Col className="col-lg-5 col-md-8 align-self-end">
+        <Card className="text-success align-middle shadow rounded-lg" variant="success">
+          <Card.Body>
+            <Card.Title as="h4" className="text-center">Success!</Card.Title>
+            <hr/>
+            <Card.Text className="text-center">
+              {needApproval? "You may login after being approved by the Manager.": "You may now login."}
+            </Card.Text>
+          </Card.Body>
+        </Card>
+      </Col>
+  );
+}
+
+export function SignUp({onSuccess, onBack}) {
+  const [success, setSuccess] = useState(false);
+  const onSignupClick = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setSuccess(true);
+    setTimeout(() => {
+      onBack();
+    }, 2000);
+  };
+
+  return (
+      success? <SignUpSuccess/>: <SignUpDialog onBack={onBack} onSignupClick={onSignupClick} />
+  );
 }
