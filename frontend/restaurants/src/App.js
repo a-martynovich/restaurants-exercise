@@ -88,14 +88,13 @@ function App() {
   return (
       <LoginContext.Provider value={{
         loggedIn,
-        role: "admin",
-        roleName: "Admin",
-        name: "Artem Martynovich",
+        ...data,
         logOut: () => {
           setLoggedIn(false);
         },
         logIn: () => {
           setLoggedIn(true);
+          queryCache.refetchQueries('user');
         }
       }}>
         {loggedIn? <RestaurantApp /> : <Credentials/>}

@@ -31,7 +31,9 @@ export function Login({onSignUp, onSuccess}) {
   };
   const resetError = () => reset();
   const getError = () => {
-    return error.body? error.body.error: error.text;
+    if(error)
+      console.log('ERROR', error);
+    return error.body? error.body.error: (error.text || error.message);
   };
 
   return (
