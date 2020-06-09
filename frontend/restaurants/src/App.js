@@ -1,7 +1,8 @@
 import './App.css';
 
 import React, {createRef, useContext, useEffect, useState} from 'react';
-import {Row, Col, Container} from 'react-bootstrap'
+import {Row, Col, Container, Alert} from 'react-bootstrap'
+import {queryCache, useMutation, useQuery} from "react-query";
 
 import {AddRestaurant} from './AddRestaurant'
 import {NavBar} from './Navbar'
@@ -11,6 +12,7 @@ import {FilterContext} from "./RatingFilter";
 import {Login, LoginContext} from "./Login"
 import {SignUp} from "./SignUp";
 import {Users} from "./Users";
+import {fetchJSON} from "./Fetch";
 
 
 
@@ -52,7 +54,7 @@ function RestaurantApp() {
   );
 }
 
-function Credentials({onLogIn}) {
+function Credentials() {
   const [showSignUp, setShowSignUp] = useState(false);
   const onShowSignUp = () => setShowSignUp(true);
   const onBack = () => setShowSignUp(false);
@@ -71,16 +73,32 @@ function Credentials({onLogIn}) {
 
 function App() {
   const [loggedIn, setLoggedIn] = useState(false);
+  const { status, data, error } = useQuery('user', async (key) => {
+    let res = await fetchJSON({
+        method: 'OPTIONS',
+        url: 'http://localhost:8000/user/'
+      });
+    return res;
+  }, {
+    retry: false,
+    onSuccess: () => setLoggedIn(true),
+    onError: err => setLoggedIn(false)
+  });
+
   return (
       <LoginContext.Provider value={{
-        loggedIn: loggedIn,
+        loggedIn,
         role: "admin",
         roleName: "Admin",
         name: "Artem Martynovich",
-        logOut: () => {setLoggedIn(false)},
-        logIn: () => {setLoggedIn(true)}
+        logOut: () => {
+          setLoggedIn(false);
+        },
+        logIn: () => {
+          setLoggedIn(true);
+        }
       }}>
-        {loggedIn? <RestaurantApp /> : <Credentials onLogIn={() => setLoggedIn(true)}/>}
+        {loggedIn? <RestaurantApp /> : <Credentials/>}
       </LoginContext.Provider>
   );
 }

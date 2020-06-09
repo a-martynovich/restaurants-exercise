@@ -5,9 +5,22 @@ import React, {useContext} from "react";
 import {RatingFilter} from "./RatingFilter";
 import {Button, ButtonGroup, Container, Nav, Navbar, OverlayTrigger, Tooltip, Dropdown} from "react-bootstrap";
 import {LoginContext} from "./Login";
+import {useMutation} from "react-query";
+import {fetchJSON} from "./Fetch";
 
 export function NavBar({backButtonVisible, showUsers, onShowUsers, onBack, onAddRestaurant}) {
   const ctx = useContext(LoginContext);
+  const [logoutMutate, {status, data, error, reset}] = useMutation(fetchJSON, {
+    onSuccess: async (data) => {
+      console.log(arguments);
+      console.log('LOGOUT SUCCESS', data);
+      // setLoggedIn(true);
+      await ctx.logOut();
+    },
+    onError: async (data) => {
+      console.log('ERROR', data);
+    }
+  });
 
   const ignoreClick = (e) => {
     e.stopPropagation();
@@ -27,8 +40,11 @@ export function NavBar({backButtonVisible, showUsers, onShowUsers, onBack, onAdd
     ignoreClick(e);
     onAddRestaurant();
   };
-  const onLogoutClick = (e) => {
-    ctx.logOut();
+  const onLogoutClick = async (e) => {
+    await logoutMutate({
+      method: 'DELETE',
+      url: 'http://localhost:8000/logout/'
+    })
   };
 
   const firstBtnActive = showUsers? "": "active";
