@@ -88,7 +88,7 @@ class RestaurantsView(APIView):
         s = RestaurantSerializer(r, data=request.data)
         if s.is_valid(raise_exception=True):
             s.save()
-        return Response({})
+        return self.get(request, format=format)
 
     def delete(self, request, pk=None, format=None):
         pass

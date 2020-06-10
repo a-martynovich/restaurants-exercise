@@ -26,6 +26,7 @@ export function AddReview({restaurantId}) {
 
       console.log(data);
       queryCache.setQueryData(['reviews', {id: restaurantId}], data);
+      queryCache.refetchQueries(['restaurant', {id: restaurantId}]);
     }
   });
 
