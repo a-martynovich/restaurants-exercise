@@ -132,10 +132,11 @@ class ReplyView(APIView):
     def post(self, request, review_pk=None, format=None):
         # if not request.user.has_perm('restaurants.can_add_reply'):
         #     return Response(status.HTTP_403_FORBIDDEN)
-        get_object_or_404(Restaurant, pk=review_pk)
+        get_object_or_404(Review, pk=review_pk)
         rs = ReplySerializer(data=request.data)
         if rs.is_valid(raise_exception=True):
             rs.save()
+        return Response({})
 
     def delete(self, request, pk=None, format=None):
         pass

@@ -21,6 +21,7 @@ export function Reviews({restaurantId}) {
   return (
       <>
         {status=='success' && data.map((r) => <Review
+            id={r.id}
             comment={r.comment}
             lastVisit={r.visited_at}
             timestamp={r.timestamp}

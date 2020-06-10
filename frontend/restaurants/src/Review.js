@@ -1,12 +1,45 @@
-import React, {useContext} from "react";
+import React, {useContext, useState} from "react";
 
 import {Stars} from "./Stars";
 import {Button, Card, Col, Form, Row} from "react-bootstrap";
 import {EditIcon} from "./EditIcon";
 import {LoginContext} from "./Login";
+import {queryCache, useMutation} from "react-query";
+import {fetchJSON} from "./Fetch";
 
 
-export function Review({rating, lastVisit, userName, userHash, timestamp, comment,
+function AddReply({reviewId}) {
+  const [submitAllowed, setSubmitAllowed] = useState(false);
+  const [mutate] = useMutation(async (e) => {
+    let res = await fetchJSON({
+        method: 'POST',
+        url: `http://localhost:8000/reply/${e.id}/`,
+        body: e.body
+      });
+      return res;
+  }, {
+    onSuccess: async () => await queryCache.refetchQueries(['reviews'])
+  });
+  const onSubmit = async (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    let data = Object.fromEntries(new FormData(e.target));
+    data.review = reviewId;
+    await mutate({id: reviewId, body: data});
+  };
+  const onChange = (e) => {
+    setSubmitAllowed(!!e.target.value);
+  };
+
+  return (
+      <form onSubmit={onSubmit} name="reply">
+        <textarea rows="3" className="w-100 small" placeholder="Your reply here." name="comment" onChange={onChange}/>
+        <Button type="submit" size="sm" className="float-right mb-1" disabled={!submitAllowed}>Submit</Button>
+      </form>
+  )
+}
+
+export function Review({id, rating, lastVisit, userName, userHash, timestamp, comment,
                        ownerReplyComment, ownerReplyTimestamp}) {
   const ctx = useContext(LoginContext);
   const isOwner = ctx.role=='owner', isAdmin = ctx.role=='admin';
@@ -41,10 +74,7 @@ export function Review({rating, lastVisit, userName, userHash, timestamp, commen
               <Card.Text className="ml-5 mb-1">
                 <small>
                   {isOwner && !ownerReplyComment?
-                  <form>
-                    <textarea rows="3" className="w-100 small" placeholder="Your reply here."/>
-                    <Button type="submit" size="sm" className="float-right mb-1">Submit</Button>
-                  </form> :
+                  <AddReply reviewId={id}/> :
                   ownerReplyComment}
                 </small>
               </Card.Text>
