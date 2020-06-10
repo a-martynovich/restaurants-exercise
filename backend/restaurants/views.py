@@ -3,13 +3,16 @@ from django.contrib.auth.forms import UserCreationForm
 
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 from rest_framework.exceptions import ValidationError
+from rest_framework.generics import get_object_or_404
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 
-from restaurants.forms import MyUserCreationForm
-from .models import Profile
+from .forms import MyUserCreationForm
+from .serializers import RestaurantSerializer, RestaurantListSerializer, ReviewListSerializer, \
+    ReviewSerializer, ReplySerializer
+from .models import Profile, Restaurant, Review, Reply
 
 
 class SignInView(APIView):
@@ -48,6 +51,11 @@ class UserView(APIView):
         })
 
 
+class UsersView(APIView):
+    authentication_classes = [SessionAuthentication]
+    permission_classes = [IsAuthenticated]
+
+
 class LogOutView(APIView):
     def delete(self, request, format=None):
         logout(request)
@@ -58,9 +66,71 @@ class RestaurantsView(APIView):
     authentication_classes = [SessionAuthentication]
     permission_classes = [IsAuthenticated]
 
+    def get(self, request, pk=None, format=None):
+        if pk:
+            r = get_object_or_404(Restaurant, id=pk)
+            return Response(RestaurantSerializer(r).data)
+        else:
+            return Response(RestaurantListSerializer(request.user.profile).data)
+
+    def patch(self, request, pk=None, format=None):
+        pass
+
+    def post(self, request, format=None):
+        if not request.user.has_perm('restaurants.can_add_restaurant'):
+            return Response(status.HTTP_403_FORBIDDEN)
+        r = Restaurant(owner=request.user)
+        s = RestaurantSerializer(r, data=request.data)
+        if s.is_valid(raise_exception=True):
+            s.save()
+        return Response({})
+
+    def delete(self, request, pk=None, format=None):
+        pass
+
+
+class ReviewsView(APIView):
+    authentication_classes = [SessionAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, restaurant_pk=None, format=None):
+        r = get_object_or_404(Restaurant, pk=restaurant_pk)
+        return Response(ReviewListSerializer(r).data)
+
+    def patch(self, request, pk=None, format=None):
+        pass
+
+    def post(self, request, restaurant_pk=None, format=None):
+        # if not request.user.has_perm('restaurants.can_add_review'):
+        #     return Response(status.HTTP_403_FORBIDDEN)
+        r = get_object_or_404(Restaurant, pk=restaurant_pk)
+        review = Review(visitor=request.user)
+        rs = ReviewSerializer(review, data=request.data)
+        if rs.is_valid(raise_exception=True):
+            rs.save()
+            return Response({})
+
+    def delete(self, request, pk=None, format=None):
+        pass
+
+
+class ReplyView(APIView):
+    authentication_classes = [SessionAuthentication]
+    permission_classes = [IsAuthenticated]
+
     def get(self, request, format=None):
-        content = {
-            'user': request.user.username,  # `django.contrib.auth.User` instance.
-            'auth': request.auth,  # None
-        }
-        return Response(content)
+        pass
+
+    def patch(self, request, pk=None, format=None):
+        pass
+
+    def post(self, request, review_pk=None, format=None):
+        # if not request.user.has_perm('restaurants.can_add_reply'):
+        #     return Response(status.HTTP_403_FORBIDDEN)
+        get_object_or_404(Restaurant, pk=review_pk)
+        rs = ReplySerializer(data=request.data)
+        if rs.is_valid(raise_exception=True):
+            rs.save()
+
+    def delete(self, request, pk=None, format=None):
+        pass

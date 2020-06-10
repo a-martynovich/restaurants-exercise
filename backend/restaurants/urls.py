@@ -16,8 +16,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
-from .views import SignInView, SignUpView, RestaurantsView, LogOutView, UserView
-
+from .views import SignInView, SignUpView, RestaurantsView, LogOutView, UserView, UsersView, ReviewsView, ReplyView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -25,5 +24,9 @@ urlpatterns = [
     path('signup/', SignUpView.as_view(), name='signup'),
     path('logout/', LogOutView.as_view(), name='logout'),
     path('user/', UserView.as_view(), name='user'),
-    path('restaurants/', RestaurantsView.as_view(), name='restaurants')
+    path('users/<int:pk>', UsersView.as_view(), name='users'),
+    path('restaurants/', RestaurantsView.as_view(), name='restaurants'),
+    path('restaurants/<int:pk>/', RestaurantsView.as_view(), name='restaurant'),
+    path('reviews/<int:restaurant_pk>/', ReviewsView.as_view(), name='reviews'),
+    path('reply/<int:review_pk>/', ReplyView.as_view(), name='reply')
 ]
