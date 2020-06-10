@@ -1,8 +1,8 @@
 from django.contrib.auth import login, authenticate, logout
-from django.contrib.auth.forms import UserCreationForm
-from django.db.models import Avg
+from django.db.models import Avg, F
+from django.views.generic import TemplateView
 
-from rest_framework.authentication import SessionAuthentication, BasicAuthentication
+from rest_framework.authentication import SessionAuthentication
 from rest_framework.exceptions import ValidationError
 from rest_framework.generics import get_object_or_404
 from rest_framework.views import APIView
@@ -11,9 +11,13 @@ from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 
 from .forms import MyUserCreationForm
-from .serializers import RestaurantSerializer, RestaurantListSerializer, ReviewListSerializer, \
+from .serializers import RestaurantSerializer, ReviewListSerializer, \
     ReviewSerializer, ReplySerializer
-from .models import Profile, Restaurant, Review, Reply
+from .models import Restaurant, Review
+
+
+class RootView(TemplateView):
+    template_name = 'index.html'
 
 
 class SignInView(APIView):
@@ -72,10 +76,10 @@ class RestaurantsView(APIView):
             r = get_object_or_404(Restaurant, id=pk)
             return Response(RestaurantSerializer(r).data)
         else:
-            restaurants = request.user.profile.restaurants
+            restaurants = Restaurant.objects.annotate(rating=Avg('review__rating')).order_by(F('rating').desc(nulls_last=True))
             rating = request.query_params.get('rating')
             if rating:
-                restaurants = Restaurant.objects.annotate(rating=Avg('review__rating')).filter(rating__gte=rating)
+                restaurants = restaurants.filter(rating__gte=rating)
             return Response({'restaurants': [RestaurantSerializer(r).data for r in restaurants]})
 
     def patch(self, request, pk=None, format=None):
