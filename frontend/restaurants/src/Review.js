@@ -1,12 +1,16 @@
-import React from "react";
+import React, {useContext} from "react";
 
 import {Stars} from "./Stars";
 import {Button, Card, Col, Form, Row} from "react-bootstrap";
 import {EditIcon} from "./EditIcon";
+import {LoginContext} from "./Login";
 
 
 export function Review({rating, lastVisit, userName, userHash, timestamp, comment,
-                       ownerReplyComment, ownerReplyTimestamp, isOwner}) {
+                       ownerReplyComment, ownerReplyTimestamp}) {
+  const ctx = useContext(LoginContext);
+  const isOwner = ctx.role=='owner', isAdmin = ctx.role=='admin';
+
   return (
     <Card className="border-left-0 border-right-0 border-top-0">
       <Row noGutters>
@@ -23,7 +27,7 @@ export function Review({rating, lastVisit, userName, userHash, timestamp, commen
             <small className="float-right mt-1"><b>Last Visit:</b> {lastVisit}</small>
             <Card.Text className="mb-1"><small>
               {comment}
-              <EditIcon className="d-inline pl-2"/>
+              {isAdmin && <EditIcon className="d-inline pl-2"/>}
             </small></Card.Text>
             <Card.Text className="align-bottom mb-0">
               <small className="text-muted">{timestamp}</small>
@@ -44,7 +48,7 @@ export function Review({rating, lastVisit, userName, userHash, timestamp, commen
                   ownerReplyComment}
                 </small>
               </Card.Text>
-              {!isOwner && <Card.Text className="align-bottom ml-5 mb-0">
+              {(!isOwner || ownerReplyComment) && <Card.Text className="align-bottom ml-5 mb-0">
                 <small className="text-muted">{ownerReplyTimestamp}</small>
               </Card.Text>}
             </div>}

@@ -2,16 +2,18 @@ import {Review} from "./Review";
 import React, {useContext} from "react";
 import {useQuery} from "react-query";
 import {LoginContext} from "./Login";
+import {fetchJSON} from "./Fetch";
 
 export function Reviews({restaurantId}) {
-  const ctx = useContext(LoginContext);
   const { status, data, error } = useQuery(
     ['reviews', { id: restaurantId }],
     async (key, {id}) => {
-      // console.log(key, id);
-      let d = await fetch('/reviews.json');
-      let j = await d.json();
-      return j;
+      let url = `http://localhost:8000/reviews/${id}/`;
+      let res = await fetchJSON({
+        method: 'GET',
+        url
+      });
+      return res.reviews;
     }
   );
   // console.log(status, data, error);
@@ -20,15 +22,14 @@ export function Reviews({restaurantId}) {
       <>
         {status=='success' && data.map((r) => <Review
             comment={r.comment}
-            lastVisit={r.lastVisit}
+            lastVisit={r.visited_at}
             timestamp={r.timestamp}
             userName={r.userName}
             userHash={r.userHash}
             rating={r.rating}
-            ownerReplyComment={r.ownerReplyComment}
-            ownerReplyTimestamp={r.ownerReplyTimestamp}
+            ownerReplyComment={r.owner_reply && r.owner_reply.comment}
+            ownerReplyTimestamp={r.owner_reply && r.owner_reply.timestamp}
             key={r.id}
-            isOwner={ctx.role=='owner'}
         />)}
       </>
   )

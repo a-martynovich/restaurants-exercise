@@ -11,6 +11,7 @@ import {Reviews} from "./Reviews";
 import {Stars} from "./Stars";
 import {LoginContext} from "./Login"
 import {EditIcon} from "./EditIcon";
+import {fetchJSON} from "./Fetch";
 
 
 export function Restaurant({id}) {
@@ -18,10 +19,12 @@ export function Restaurant({id}) {
   const { status, data, error } = useQuery(
     ['restaurant', { id }],
     async (key, {id}) => {
-      // console.log(key, id);
-      let d = await fetch('/restaurant.json');
-      let j = await d.json();
-      return j;
+      let url = `http://localhost:8000/restaurants/${id}/`;
+      let res = await fetchJSON({
+        method: 'GET',
+        url
+      });
+      return res;
     }
   );
 
@@ -44,9 +47,9 @@ export function Restaurant({id}) {
             {disp_data.address}
           </small>
 
-          <Card.Text>{disp_data.short_description}</Card.Text>
-          <Card.Text>{disp_data.long_description}
-            <EditIcon className="text-center pl-2 small d-inline"/>
+          <Card.Text>{disp_data.summary}</Card.Text>
+          <Card.Text>{disp_data.description}
+            {ctx.role=='admin' && <EditIcon className="text-center pl-2 small d-inline"/>}
           </Card.Text>
 
           <Card className="mt-2">
@@ -66,7 +69,7 @@ export function Restaurant({id}) {
             </Card.Body>
           </Card>
 
-          {ctx.role == 'user' &&
+          {ctx.role == 'visitor' &&
           <Card className="mt-2">
             <Card.Header as="h6">
               Add Review

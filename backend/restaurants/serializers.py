@@ -23,6 +23,7 @@ class ReplySerializer(serializers.ModelSerializer):
     class Meta:
         model = Reply
         fields = ['id', 'review', 'comment', 'timestamp']
+        extra_kwargs = {'timestamp': {'format': '%Y-%m-%d %H:%M %p'}}
         read_only_fields = ['id', 'timestamp']
 
 
@@ -32,6 +33,7 @@ class ReviewSerializer(serializers.ModelSerializer):
     class Meta:
         model = Review
         fields = ['id', 'restaurant', 'rating', 'comment', 'visited_at', 'timestamp', 'owner_reply']
+        extra_kwargs = {'timestamp': {'format': '%Y-%m-%d %H:%M %p'}}
         read_only_fields = ['timestamp', 'id']
 
 
