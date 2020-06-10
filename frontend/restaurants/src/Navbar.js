@@ -96,7 +96,7 @@ export function NavBar({backButtonVisible, showUsers, onShowUsers, onBack, onAdd
             <OverlayTrigger overlay={<Tooltip id="tooltip-user">{ctx.roleName}</Tooltip>} placement="bottom">
               <Button variant="outline-light" size="sm" className="text-nowrap restaurants-login-btn" onClick={ignoreClick}>
                 <FontAwesomeIcon icon={faUser} className="mr-3"/>
-                Artem Martynovich
+                {ctx.name}
               </Button>
             </OverlayTrigger>
             <OverlayTrigger overlay={<Tooltip id="tooltip-user">Log Out</Tooltip>} placement="bottom" onClick={onLogout}>

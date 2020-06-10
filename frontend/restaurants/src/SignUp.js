@@ -56,12 +56,12 @@ function SignUpDialog({onBack, onSignup}) {
                 </Form.Label>
               </Col>
               <Col>
-                <Form.Control as="select" isInvalid={null}>
-                  <option>Visitor</option>
-                  <option>Owner</option>
-                  <option>Admin</option>
+                <Form.Control as="select" isInvalid={validation.role} name="role">
+                  <option value="visitors">Visitor</option>
+                  <option value="owners">Owner</option>
+                  <option value="admins">Admin</option>
                 </Form.Control>
-                <Form.Control.Feedback>...</Form.Control.Feedback>
+                <Form.Control.Feedback type="invalid">{validation.role && validation.role[0]}</Form.Control.Feedback>
               </Col>
             </Form.Row>
             <Form.Row className="mb-3">

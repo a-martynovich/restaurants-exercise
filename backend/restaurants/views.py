@@ -2,11 +2,13 @@ from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.forms import UserCreationForm
 
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
+from rest_framework.exceptions import ValidationError
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 
+from restaurants.forms import MyUserCreationForm
 from .models import Profile
 
 
@@ -23,9 +25,8 @@ class SignInView(APIView):
 
 class SignUpView(APIView):
     def post(self, request, format=None):
-        form = UserCreationForm(request.data)
+        form = MyUserCreationForm(request.data)
         if form.is_valid():
-            # Save the new user, update its referral status, login and redirect to root page.
             new_user = form.save()
             return Response({})
         else:
@@ -37,10 +38,13 @@ class UserView(APIView):
     permission_classes = [IsAuthenticated]
 
     def options(self, request, format=None):
+        user = request.user
+        group = user.groups.first()
+        group_name = group.name[:-1]
         return Response({
-            'role': "admin",
-            'roleName': "Admin",
-            'name': "Artem Martynovich",
+            'role': group_name,
+            'roleName': group_name.capitalize(),
+            'name': request.user.first_name + " " + request.user.last_name,
         })
 
 
