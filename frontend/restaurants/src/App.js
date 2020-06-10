@@ -76,7 +76,7 @@ function App() {
   const { status, data, error } = useQuery('user', async (key) => {
     let res = await fetchJSON({
         method: 'OPTIONS',
-        url: 'http://localhost:8000/user/'
+        url: 'user/'
       });
     return res;
   }, {

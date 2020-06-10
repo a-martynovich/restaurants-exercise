@@ -14,7 +14,7 @@ export function AddReview({restaurantId}) {
     console.log(e);
     let res = await fetchJSON({
         method: 'POST',
-        url: `http://localhost:8000/reviews/${e.id}/`,
+        url: `reviews/${e.id}/`,
         body: e.body
       });
       return res.reviews;

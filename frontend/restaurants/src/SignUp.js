@@ -21,7 +21,7 @@ function SignUpDialog({onBack, onSignup}) {
     data.username = data.email;
     await mutate({
       method: 'POST',
-      url: 'http://localhost:8000/signup/',
+      url: 'signup/',
       body: data
     });
   };

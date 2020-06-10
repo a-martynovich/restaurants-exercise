@@ -12,7 +12,7 @@ export function AddRestaurant({shown, onClose}) {
     console.log(data);
     let res = await fetchJSON({
         method: 'POST',
-        url: `http://localhost:8000/restaurants/`,
+        url: `restaurants/`,
         body: data
       });
       return res.restaurants;

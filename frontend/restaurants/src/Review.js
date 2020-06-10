@@ -13,7 +13,7 @@ function AddReply({reviewId}) {
   const [mutate] = useMutation(async (e) => {
     let res = await fetchJSON({
         method: 'POST',
-        url: `http://localhost:8000/reply/${e.id}/`,
+        url: `reply/${e.id}/`,
         body: e.body
       });
       return res;

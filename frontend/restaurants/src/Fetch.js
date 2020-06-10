@@ -1,3 +1,5 @@
+const URL = "/";
+
 function getCookie(name) {
     var cookieValue = null;
     if (document.cookie && document.cookie !== '') {
@@ -18,7 +20,7 @@ export async function fetchJSON({method, url, body}) {
   console.log('fetchJSON', arguments);
   const csrftoken = getCookie('csrftoken');
 
-  let f = await fetch(url, {
+  let f = await fetch(URL+url, {
     method,
     credentials: "include",
     headers: {

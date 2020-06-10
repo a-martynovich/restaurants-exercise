@@ -43,7 +43,7 @@ export function NavBar({backButtonVisible, showUsers, onShowUsers, onBack, onAdd
   const onLogoutClick = async (e) => {
     await logoutMutate({
       method: 'DELETE',
-      url: 'http://localhost:8000/logout/'
+      url: 'logout/'
     })
   };
 

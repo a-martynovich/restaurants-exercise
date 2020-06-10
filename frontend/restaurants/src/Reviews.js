@@ -8,7 +8,7 @@ export function Reviews({restaurantId}) {
   const { status, data, error } = useQuery(
     ['reviews', { id: restaurantId }],
     async (key, {id}) => {
-      let url = `http://localhost:8000/reviews/${id}/`;
+      let url = `reviews/${id}/`;
       let res = await fetchJSON({
         method: 'GET',
         url

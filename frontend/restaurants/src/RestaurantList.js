@@ -12,7 +12,7 @@ export function RestaurantList({onSelect, rating}) {
     const { status, data, error } = useQuery(
     ['restaurants', {rating: filterRating} ],
     async (key, {rating}) => {
-      let url = 'http://localhost:8000/restaurants/';
+      let url = 'restaurants/';
       if(rating)
         url += `?rating=${rating}`;
       let res = await fetchJSON({

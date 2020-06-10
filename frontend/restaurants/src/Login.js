@@ -22,7 +22,7 @@ export function Login({onSignUp, onSuccess}) {
     console.log(d);
     await loginMutate({
       method: 'POST',
-      url: 'http://localhost:8000/login/',
+      url: 'login/',
       body: {
         username: d.email,
         password: d.password
