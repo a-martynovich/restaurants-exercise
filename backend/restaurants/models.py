@@ -31,7 +31,8 @@ class Restaurant(models.Model):
 
     @property
     def average_rating(self):
-        return self.review_set.aggregate(Avg('rating'))['rating__avg']
+        rating = self.review_set.aggregate(Avg('rating'))['rating__avg']
+        return round(rating, 1) if rating is not None else None
 
 
 class Review(models.Model):

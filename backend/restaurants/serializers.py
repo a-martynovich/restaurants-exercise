@@ -28,13 +28,13 @@ class ReplySerializer(serializers.ModelSerializer):
 
 
 class ReviewSerializer(serializers.ModelSerializer):
-    owner_reply = ReplySerializer(source='reply')
+    owner_reply = ReplySerializer(source='reply', read_only=True)
 
     class Meta:
         model = Review
         fields = ['id', 'restaurant', 'rating', 'comment', 'visited_at', 'timestamp', 'owner_reply']
         extra_kwargs = {'timestamp': {'format': '%Y-%m-%d %H:%M %p'}}
-        read_only_fields = ['timestamp', 'id']
+        read_only_fields = ['timestamp', 'id', 'owner_reply']
 
 
 class ReviewListSerializer(serializers.ModelSerializer):

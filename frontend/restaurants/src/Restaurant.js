@@ -75,7 +75,7 @@ export function Restaurant({id}) {
               Add Review
             </Card.Header>
             <Card.Body>
-              <AddReview/>
+              <AddReview restaurantId={id}/>
             </Card.Body>
           </Card>}
         </Card.Body>

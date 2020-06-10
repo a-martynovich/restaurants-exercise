@@ -113,7 +113,7 @@ class ReviewsView(APIView):
         rs = ReviewSerializer(review, data=request.data)
         if rs.is_valid(raise_exception=True):
             rs.save()
-            return Response({})
+            return Response(ReviewListSerializer(r).data)
 
     def delete(self, request, pk=None, format=None):
         pass
