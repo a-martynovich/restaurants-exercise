@@ -2,16 +2,24 @@ import React, {useContext, useState} from "react";
 
 import {RestaurantCard} from "./RestaurantCard";
 import {useQuery} from "react-query";
+import {fetchJSON} from "./Fetch";
+import {FilterContext} from "./RatingFilter";
 
 
 export function RestaurantList({onSelect, rating}) {
+    const [filterRating, setFilterRating] = useContext(FilterContext);
+
     const { status, data, error } = useQuery(
-    ['restaurants', {rating} ],
-    async (key) => {
-      console.log(key, rating);
-      let d = await fetch('/restaurants.json');
-      let j = await d.json();
-      return j;
+    ['restaurants', {rating: filterRating} ],
+    async (key, {rating}) => {
+      let url = 'http://localhost:8000/restaurants/';
+      if(rating)
+        url += `?rating=${rating}`;
+      let res = await fetchJSON({
+        method: 'GET',
+        url
+      });
+      return res.restaurants;
     }
   );
   const onClick = (e, id) => {
@@ -31,7 +39,7 @@ export function RestaurantList({onSelect, rating}) {
       name={c.name}
       address={c.address}
       reviews_count={c.reviews_count}
-      short_description={c.short_description}
+      summary={c.summary}
       average_rating={c.average_rating}/>)}
     </>
   );

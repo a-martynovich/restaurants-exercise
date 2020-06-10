@@ -10,7 +10,7 @@ export function RatingFilter({onSelect}) {
   const [ratingHover, setRatingHover] = useState(false);
   const [rating, setRating] = useState(0);
   const [expanded, setExpanded] = useState(false);
-  const [setFilterRating] = useContext(FilterContext);
+  const [filterRating, setFilterRating] = useContext(FilterContext);
 
   const spanRef = createRef();
   const onMouseOver = (e) => {

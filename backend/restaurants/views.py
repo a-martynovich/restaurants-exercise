@@ -1,5 +1,6 @@
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.forms import UserCreationForm
+from django.db.models import Avg
 
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 from rest_framework.exceptions import ValidationError
@@ -71,7 +72,11 @@ class RestaurantsView(APIView):
             r = get_object_or_404(Restaurant, id=pk)
             return Response(RestaurantSerializer(r).data)
         else:
-            return Response(RestaurantListSerializer(request.user.profile).data)
+            restaurants = request.user.profile.restaurants
+            rating = request.query_params.get('rating')
+            if rating:
+                restaurants = Restaurant.objects.annotate(rating=Avg('review__rating')).filter(rating__gte=rating)
+            return Response({'restaurants': [RestaurantSerializer(r).data for r in restaurants]})
 
     def patch(self, request, pk=None, format=None):
         pass

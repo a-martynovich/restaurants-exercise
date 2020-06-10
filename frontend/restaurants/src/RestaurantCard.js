@@ -6,7 +6,7 @@ import {Stars} from "./Stars";
 import {Card, Col, Row} from "react-bootstrap";
 
 
-export function RestaurantCard({id, name, address, short_description, reviews_count, average_rating, onClick}) {
+export function RestaurantCard({id, name, address, summary, reviews_count, average_rating, onClick}) {
   return (
       <Card className="mb-3 shadow-sm restaurants-card">
         <Row>
@@ -22,7 +22,7 @@ export function RestaurantCard({id, name, address, short_description, reviews_co
                 <Stars staticRating={average_rating}/>
                 <small className="text-muted align-text-top pl-2">{average_rating}</small>
               </span>
-              <Card.Text className="text-justify">{short_description}</Card.Text>
+              <Card.Text className="text-justify">{summary}</Card.Text>
               <hr className="mt-0 mb-1"/>
               <Card.Text className="card-text">
                 <small className="text-muted">

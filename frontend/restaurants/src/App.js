@@ -32,7 +32,7 @@ function RestaurantApp() {
   const onBack = () => setCard(null);
 
   return (
-      <FilterContext.Provider value={[setRating]}>
+      <FilterContext.Provider value={[rating, setRating]}>
       <Container className="restaurants-main bg-white" as="div">
         <NavBar backButtonVisible={card !== null}
                 onBack={onBack}

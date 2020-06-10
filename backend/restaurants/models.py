@@ -1,6 +1,7 @@
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.db import models
+from django.db.models import Avg
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.core.validators import MinValueValidator, MaxValueValidator
@@ -26,11 +27,11 @@ class Restaurant(models.Model):
 
     @property
     def reviews_count(self):
-        return 1
+        return self.review_set.count()
 
     @property
     def average_rating(self):
-        return 5.0
+        return self.review_set.aggregate(Avg('rating'))['rating__avg']
 
 
 class Review(models.Model):
