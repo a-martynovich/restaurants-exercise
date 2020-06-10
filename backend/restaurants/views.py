@@ -106,8 +106,8 @@ class ReviewsView(APIView):
         pass
 
     def post(self, request, restaurant_pk=None, format=None):
-        # if not request.user.has_perm('restaurants.can_add_review'):
-        #     return Response(status.HTTP_403_FORBIDDEN)
+        if not request.user.has_perm('restaurants.can_add_review'):
+            return Response(status.HTTP_403_FORBIDDEN)
         r = get_object_or_404(Restaurant, pk=restaurant_pk)
         review = Review(visitor=request.user)
         rs = ReviewSerializer(review, data=request.data)
@@ -130,8 +130,8 @@ class ReplyView(APIView):
         pass
 
     def post(self, request, review_pk=None, format=None):
-        # if not request.user.has_perm('restaurants.can_add_reply'):
-        #     return Response(status.HTTP_403_FORBIDDEN)
+        if not request.user.has_perm('restaurants.can_add_reply'):
+            return Response(status.HTTP_403_FORBIDDEN)
         get_object_or_404(Review, pk=review_pk)
         rs = ReplySerializer(data=request.data)
         if rs.is_valid(raise_exception=True):
