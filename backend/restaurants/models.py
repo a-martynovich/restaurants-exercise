@@ -1,3 +1,5 @@
+import hashlib
+
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.db import models
@@ -43,6 +45,14 @@ class Review(models.Model):
     comment = models.TextField()
     visited_at = models.DateField()
     timestamp = models.DateTimeField(auto_now_add=True)
+
+    @property
+    def user_name(self):
+        return self.visitor.first_name
+
+    @property
+    def user_hash(self):
+        return hashlib.md5(self.visitor.email.encode()).hexdigest()
 
 
 class Reply(models.Model):

@@ -24,8 +24,8 @@ export function Reviews({restaurantId}) {
             comment={r.comment}
             lastVisit={r.visited_at}
             timestamp={r.timestamp}
-            userName={r.userName}
-            userHash={r.userHash}
+            userName={r.user_name}
+            userHash={r.user_hash}
             rating={r.rating}
             ownerReplyComment={r.owner_reply && r.owner_reply.comment}
             ownerReplyTimestamp={r.owner_reply && r.owner_reply.timestamp}
