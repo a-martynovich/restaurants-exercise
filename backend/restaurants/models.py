@@ -14,7 +14,7 @@ class Profile(models.Model):
 
     @property
     def restaurants(self):
-        if self.user.has_perm('restaurants.can_reply'):
+        if self.user.has_perm('restaurants.can_add_reply'):
             return Restaurant.objects.filter(owner=self.user)
         else:
             return Restaurant.objects.all()

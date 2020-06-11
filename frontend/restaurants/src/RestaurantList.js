@@ -4,6 +4,7 @@ import {RestaurantCard} from "./RestaurantCard";
 import {useQuery} from "react-query";
 import {fetchJSON} from "./Fetch";
 import {FilterContext} from "./RatingFilter";
+import {Alert} from "react-bootstrap";
 
 
 export function RestaurantList({onSelect, rating}) {
@@ -32,7 +33,8 @@ export function RestaurantList({onSelect, rating}) {
 
   return (
     <>
-      {cards.map(c => <RestaurantCard
+      {cards.length?
+          cards.map(c => <RestaurantCard
       onClick={(e) => onClick(e, c.id)}
       key={c.id}
       id={c.id}
@@ -40,7 +42,8 @@ export function RestaurantList({onSelect, rating}) {
       address={c.address}
       reviews_count={c.reviews_count}
       summary={c.summary}
-      average_rating={c.average_rating}/>)}
+      average_rating={c.average_rating}/>) :
+          <Alert variant="info">No resturants.</Alert> }
     </>
   );
 }

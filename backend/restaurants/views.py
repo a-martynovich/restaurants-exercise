@@ -74,9 +74,11 @@ class RestaurantsView(APIView):
     def get(self, request, pk=None, format=None):
         if pk:
             r = get_object_or_404(Restaurant, id=pk)
+            if request.user.has_perm('restaurants.can_add_reply') and r.owner != request.user:
+                return Response(status.HTTP_403_FORBIDDEN)
             return Response(RestaurantSerializer(r).data)
         else:
-            restaurants = Restaurant.objects.annotate(rating=Avg('review__rating')).order_by(F('rating').desc(nulls_last=True))
+            restaurants = request.user.profile.restaurants.annotate(rating=Avg('review__rating')).order_by(F('rating').desc(nulls_last=True))
             rating = request.query_params.get('rating')
             if rating:
                 restaurants = restaurants.filter(rating__gte=rating)
