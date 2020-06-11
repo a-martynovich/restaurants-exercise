@@ -46,7 +46,7 @@ export function RestaurantList({onSelect, rating}) {
       summary={c.summary}
       average_rating={c.average_rating}
       bell={role=='owner' && c.awaits_reply}/>) :
-          <Alert variant="info">No resturants.</Alert> }
+          (status=='success' && <Alert variant="info">No restaurants.</Alert>) }
     </>
   );
 }
