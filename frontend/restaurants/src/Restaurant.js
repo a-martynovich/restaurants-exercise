@@ -4,7 +4,7 @@ import {faEdit, faMapMarkerAlt} from "@fortawesome/free-solid-svg-icons";
 import DatePicker from "react-datepicker";
 import {queryCache, useMutation, useQuery} from 'react-query'
 
-import {Card, Row, Col, Form, FormGroup, Button, Modal} from "react-bootstrap";
+import {Card, Row, Col, Form, FormGroup, Button, Modal, Alert} from "react-bootstrap";
 
 import {AddReview} from "./AddReview";
 import {Reviews} from "./Reviews";
@@ -77,7 +77,47 @@ function EditRestaurant({shown, id, onClose, data}) {
 }
 
 
-export function Restaurant({id}) {
+function DeleteRestaurant({id, restaurantId, onClose, onDelete, shown}) {
+  const [mutate] = useMutation(async (reviewid) => {
+    console.log(reviewid);
+    let res = await fetchJSON({
+        method: 'DELETE',
+        url: `restaurants/${reviewid}/`,
+      });
+      return res.reviews;
+  }, {
+    onSuccess: async (replyData) => {
+      console.log(replyData);
+      await queryCache.refetchQueries('restaurants');
+      onDelete();
+    }
+  });
+  const onSubmit = async () => {
+    await mutate(id);
+  };
+
+  return (
+    <Modal show={shown} onHide={onClose} centered size="lg">
+      <Modal.Header closeButton>
+        <Modal.Title>Delete Restaurant</Modal.Title>
+      </Modal.Header>
+      <Modal.Body>
+        <Alert variant="danger">Are you sure?</Alert>
+      </Modal.Body>
+      <Modal.Footer>
+        <Button variant="secondary" onClick={onClose}>
+          Close
+        </Button>
+        <Button variant="danger" onClick={onSubmit}>
+          Delete
+        </Button>
+      </Modal.Footer>
+    </Modal>
+  );
+}
+
+
+export function Restaurant({id, onDeleted}) {
   const ctx = useContext(LoginContext);
   const { status, data, error } = useQuery(
     ['restaurant', { id }],
@@ -91,6 +131,13 @@ export function Restaurant({id}) {
     }
   );
   const [showEditRestaurant, setShowEditRestaurant] = useState(false);
+  const [showDeleteRestaurant, setShowDeleteRestaurant] = useState(false);
+
+  const onDelete = () => {
+    console.log('DELETED');
+    setShowDeleteRestaurant(false);
+    onDeleted();
+  };
 
   // console.log(status, data, error);
   let disp_data = data;
@@ -102,7 +149,10 @@ export function Restaurant({id}) {
       <Card className="mb-3">
         {/*<img src="https://via.placeholder.com/150x70" className="card-img-top restaurant-card-img" alt="..." />*/}
         <Card.Body>
-          <EditRestaurant shown={showEditRestaurant} data={disp_data} id={id} onClose={() => setShowEditRestaurant(false)}/>
+          {showEditRestaurant && <EditRestaurant shown={showEditRestaurant} data={disp_data} id={id}
+                                                 onClose={() => setShowEditRestaurant(false)}/>}
+          {showDeleteRestaurant && <DeleteRestaurant shown={showDeleteRestaurant} id={id}
+                                                     onDelete={onDelete} onClose={() => setShowDeleteRestaurant(false)}/>}
 
           <p className="text-center mb-1">
             <Card.Title as="h3" className="d-inline-block mb-0">{disp_data.name}</Card.Title>
@@ -116,7 +166,9 @@ export function Restaurant({id}) {
           <Card.Text>{disp_data.summary}</Card.Text>
           <Card.Text>{disp_data.description}
             {ctx.role=='admin' &&
-            <EditIcon className="text-center pl-2 small d-inline" onEdit={()=>setShowEditRestaurant(true)}/>}
+            <EditIcon className="text-center pl-2 small d-inline"
+                      onEdit={()=>setShowEditRestaurant(true)}
+                      onDelete={()=>setShowDeleteRestaurant(true)}/>}
           </Card.Text>
 
           <Card className="mt-2">

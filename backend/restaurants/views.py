@@ -122,7 +122,7 @@ class RestaurantsView(APIView):
             return Response(status.HTTP_403_FORBIDDEN)
         r = get_object_or_404(Restaurant, id=pk)
         r.delete()
-        return self.get(request, pk=pk, format=format)
+        return self.get(request, format=format)
 
 
 class ReviewsView(APIView):

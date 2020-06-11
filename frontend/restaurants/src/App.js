@@ -46,7 +46,8 @@ function RestaurantApp() {
           <Col className="col-md-9">
             {showUsers?
               <Users/>:
-                (card===null? <RestaurantList onSelect={onCardSelect} rating={rating}/> : <Restaurant id={card}/>)}
+                (card===null? <RestaurantList onSelect={onCardSelect} rating={rating}/> :
+                    <Restaurant id={card} onDeleted={onBack}/>)}
           </Col>
         </Row>
       </Container>
