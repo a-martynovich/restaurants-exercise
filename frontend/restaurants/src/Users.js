@@ -48,9 +48,9 @@ function DeleteUser({id, onClose, onDelete, shown}) {
 }
 
 
-function EditUser({shown, id, onClose, data}) {
+function EditUser({shown, id, onClose, info}) {
   const formRef = React.createRef();
-  const [mutate] = useMutation(async (req) => {
+  const [mutate, {status, data, error, reset}] = useMutation(async (req) => {
     console.log(req);
     let res = await fetchJSON({
         method: 'PATCH',
@@ -78,26 +78,27 @@ function EditUser({shown, id, onClose, data}) {
         <Modal.Title>Edit User</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        {data && <Form ref={formRef}>
+        {info && <Form ref={formRef}>
           <Form.Group as={Row}>
             <Form.Label column sm={3} md={3} lg={3}>First Name: </Form.Label>
             <Col>
-              <Form.Control type="text" name="first_name" defaultValue={data.userName} required/>
+              <Form.Control type="text" name="first_name" defaultValue={info.userName} required onChange={reset}/>
             </Col>
           </Form.Group>
           <Form.Group as={Row}>
             <Form.Label column sm={3} md={3} lg={3}>Last Name: </Form.Label>
             <Col>
-              <Form.Control type="text" name="last_name" defaultValue={data.lastName} required/>
+              <Form.Control type="text" name="last_name" defaultValue={info.lastName} required onChange={reset}/>
             </Col>
           </Form.Group>
           <Form.Group as={Row}>
             <Form.Label column sm={3} md={3} lg={3}>Email: </Form.Label>
             <Col>
-              <Form.Control type="email" name="email" defaultValue={data.email} required/>
+              <Form.Control type="email" name="email" defaultValue={info.email} required onChange={reset}/>
             </Col>
           </Form.Group>
         </Form>}
+        {error && <Alert variant="danger">Error</Alert>}
       </Modal.Body>
       <Modal.Footer>
         <Button variant="secondary" onClick={onClose}>
@@ -119,7 +120,7 @@ function User({id, userHash, userName, lastName, email}) {
   return (
     <Card className="mb-3 shadow-sm bg-light">
       {deleteShow && <DeleteUser shown={deleteShow} id={id} onClose={() => setDeleteShow(false)}/> }
-      {editShow && <EditUser shown={editShow} id={id} onClose={() => setEditShow(false)} data={{id, userName, lastName, email}}/> }
+      {editShow && <EditUser shown={editShow} id={id} onClose={() => setEditShow(false)} info={{id, userName, lastName, email}}/> }
       <Row noGutters>
         <Col md={2} className="p-3 align-self-center">
           <img src={`https://www.gravatar.com/avatar/${userHash}?s=100`}
