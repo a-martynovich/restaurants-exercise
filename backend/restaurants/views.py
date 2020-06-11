@@ -1,6 +1,9 @@
+import hashlib
+
 from django.contrib.auth import login, authenticate, logout
 from django.db.models import Avg, F
 from django.views.generic import TemplateView
+from django.contrib.auth.models import User
 
 from rest_framework.authentication import SessionAuthentication
 from rest_framework.exceptions import ValidationError
@@ -12,7 +15,7 @@ from rest_framework.permissions import IsAuthenticated
 
 from .forms import MyUserCreationForm
 from .serializers import RestaurantSerializer, ReviewListSerializer, \
-    ReviewSerializer, ReplySerializer
+    ReviewSerializer, ReplySerializer, UserSerializer
 from .models import Restaurant, Review
 
 
@@ -207,3 +210,33 @@ class ReplyView(APIView):
     def delete(self, request, pk=None, format=None):
         if not request.user.has_perm('restaurants.can_edit'):
             return Response(status.HTTP_403_FORBIDDEN)
+
+
+class UsersView(APIView):
+    authentication_classes = [SessionAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, pk=None, format=None):
+        if not request.user.has_perm('restaurants.can_edit'):
+            return Response(status.HTTP_403_FORBIDDEN)
+        users = list(User.objects.all())
+        data = [UserSerializer(u).data for u in users]
+        for d in data:
+            d['email_hash'] = hashlib.md5(d['email'].encode()).hexdigest()
+        return Response(data)
+
+    def patch(self, request, pk=None, format=None):
+        if not request.user.has_perm('restaurants.can_edit'):
+            return Response(status.HTTP_403_FORBIDDEN)
+        u = get_object_or_404(User, id=pk)
+        us = UserSerializer(u, data=request.data)
+        if us.is_valid(raise_exception=True):
+            us.save()
+            return self.get(request)
+
+    def delete(self, request, pk=None, format=None):
+        if not request.user.has_perm('restaurants.can_edit'):
+            return Response(status.HTTP_403_FORBIDDEN)
+        u = get_object_or_404(User, id=pk)
+        u.delete()
+        return self.get(request)

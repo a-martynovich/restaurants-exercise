@@ -43,7 +43,7 @@ function RestaurantApp() {
         <AddRestaurant shown={showAddRestaurant} onClose={onAddRestaurantClose}/>
 
         <Row className="justify-content-center mt-3">
-          <Col className="col-md-9">
+          <Col className="col-md-12 col-lg-9">
             {showUsers?
               <Users/>:
                 (card===null? <RestaurantList onSelect={onCardSelect} rating={rating}/> :

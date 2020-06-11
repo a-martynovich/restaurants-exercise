@@ -4,6 +4,7 @@ import {faComment, faMapMarkerAlt} from "@fortawesome/free-solid-svg-icons";
 import {useQuery} from "react-query";
 import {EditIcon} from "./EditIcon";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {fetchJSON} from "./Fetch";
 
 
 function User({userHash, userName, lastName, email}) {
@@ -54,10 +55,11 @@ export function Users() {
   const { status, data, error } = useQuery(
     ['users', {} ],
     async (key) => {
-      console.log(key);
-      let d = await fetch('/users.json');
-      let j = await d.json();
-      return j;
+      let res = await fetchJSON({
+        method: 'GET',
+        url: 'users/'
+      });
+      return res;
     }
   );
 

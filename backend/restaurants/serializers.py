@@ -1,4 +1,6 @@
 from django.conf import settings
+from django.contrib.auth.models import User
+
 from rest_framework import serializers
 
 from .models import Restaurant, Reply, Review, Profile
@@ -46,3 +48,8 @@ class ReviewListSerializer(serializers.ModelSerializer):
         model = Restaurant
         fields = ['reviews']
 
+
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['id', 'first_name', 'last_name', 'email']
