@@ -55,6 +55,18 @@ class UserView(APIView):
             'name': request.user.first_name + " " + request.user.last_name,
         })
 
+    def get(self, request, format=None):
+        if not request.user.has_perm('restaurants.can_edit'):
+            return Response(status.HTTP_403_FORBIDDEN)
+
+    def patch(self, request, pk=None, format=None):
+        if not request.user.has_perm('restaurants.can_edit'):
+            return Response(status.HTTP_403_FORBIDDEN)
+
+    def delete(self, request, pk=None, format=None):
+        if not request.user.has_perm('restaurants.can_edit'):
+            return Response(status.HTTP_403_FORBIDDEN)
+
 
 class UsersView(APIView):
     authentication_classes = [SessionAuthentication]
@@ -88,7 +100,13 @@ class RestaurantsView(APIView):
             return Response({'restaurants': data})
 
     def patch(self, request, pk=None, format=None):
-        pass
+        if not request.user.has_perm('restaurants.can_edit'):
+            return Response(status.HTTP_403_FORBIDDEN)
+        r = get_object_or_404(Restaurant, id=pk)
+        s = RestaurantSerializer(r, data=request.data)
+        if s.is_valid(raise_exception=True):
+            s.save()
+        return self.get(request, pk=pk, format=format)
 
     def post(self, request, format=None):
         if not request.user.has_perm('restaurants.can_add_restaurant'):
@@ -100,7 +118,11 @@ class RestaurantsView(APIView):
         return self.get(request, format=format)
 
     def delete(self, request, pk=None, format=None):
-        pass
+        if not request.user.has_perm('restaurants.can_edit'):
+            return Response(status.HTTP_403_FORBIDDEN)
+        r = get_object_or_404(Restaurant, id=pk)
+        r.delete()
+        return self.get(request, pk=pk, format=format)
 
 
 class ReviewsView(APIView):
@@ -135,7 +157,8 @@ class ReviewsView(APIView):
         return Response({'reviews': reviews})
 
     def patch(self, request, pk=None, format=None):
-        pass
+        if not request.user.has_perm('restaurants.can_edit'):
+            return Response(status.HTTP_403_FORBIDDEN)
 
     def post(self, request, restaurant_pk=None, format=None):
         if not request.user.has_perm('restaurants.can_add_review'):
@@ -148,7 +171,8 @@ class ReviewsView(APIView):
             return self.get(request, restaurant_pk=restaurant_pk, format=format)
 
     def delete(self, request, pk=None, format=None):
-        pass
+        if not request.user.has_perm('restaurants.can_edit'):
+            return Response(status.HTTP_403_FORBIDDEN)
 
 
 class ReplyView(APIView):
@@ -159,7 +183,8 @@ class ReplyView(APIView):
         pass
 
     def patch(self, request, pk=None, format=None):
-        pass
+        if not request.user.has_perm('restaurants.can_edit'):
+            return Response(status.HTTP_403_FORBIDDEN)
 
     def post(self, request, review_pk=None, format=None):
         if not request.user.has_perm('restaurants.can_add_reply'):
@@ -171,4 +196,5 @@ class ReplyView(APIView):
         return Response({})
 
     def delete(self, request, pk=None, format=None):
-        pass
+        if not request.user.has_perm('restaurants.can_edit'):
+            return Response(status.HTTP_403_FORBIDDEN)
