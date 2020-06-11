@@ -30,6 +30,9 @@ export function Reviews({restaurantId}) {
             rating={r.rating}
             ownerReplyComment={r.owner_reply && r.owner_reply.comment}
             ownerReplyTimestamp={r.owner_reply && r.owner_reply.timestamp}
+            isLatest={r.is_latest}
+            isHighest={r.is_highest_rated}
+            isLowest={r.is_lowest_rated}
             key={r.id}
         />)}
       </>

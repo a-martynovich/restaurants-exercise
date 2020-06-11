@@ -1,7 +1,7 @@
 import React, {useContext, useState} from "react";
 
 import {Stars} from "./Stars";
-import {Button, Card, Col, Form, Row} from "react-bootstrap";
+import {Badge, Button, Card, Col, Form, Row} from "react-bootstrap";
 import {EditIcon} from "./EditIcon";
 import {LoginContext} from "./Login";
 import {queryCache, useMutation} from "react-query";
@@ -40,7 +40,7 @@ function AddReply({reviewId}) {
 }
 
 export function Review({id, rating, lastVisit, userName, userHash, timestamp, comment,
-                       ownerReplyComment, ownerReplyTimestamp}) {
+                       ownerReplyComment, ownerReplyTimestamp, isLatest, isHighest, isLowest}) {
   const ctx = useContext(LoginContext);
   const isOwner = ctx.role=='owner', isAdmin = ctx.role=='admin';
 
@@ -57,6 +57,9 @@ export function Review({id, rating, lastVisit, userName, userHash, timestamp, co
             <span className="align-top flex-nowrap">
               <small><Stars staticRating={rating}/></small>
             </span>
+            {isHighest && <Badge pill variant="success">HIGHEST</Badge>}
+            {isLowest && <Badge pill variant="danger">LOWEST</Badge>}
+            {isLatest && <Badge pill variant="secondary">LATEST</Badge>}
             <small className="float-right mt-1"><b>Last Visit:</b> {lastVisit}</small>
             <Card.Text className="mb-1"><small>
               {comment}

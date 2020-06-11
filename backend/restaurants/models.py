@@ -54,6 +54,30 @@ class Review(models.Model):
     def user_hash(self):
         return hashlib.md5(self.visitor.email.encode()).hexdigest()
 
+    @property
+    def is_latest(self):
+        return getattr(self, '_is_latest', False)
+
+    @is_latest.setter
+    def is_latest(self, b):
+        self._is_latest = b
+
+    @property
+    def is_highest_rated(self):
+        return getattr(self, '_is_highest_rated', False)
+
+    @is_highest_rated.setter
+    def is_highest_rated(self, b):
+        self._is_highest_rated = b
+
+    @property
+    def is_lowest_rated(self):
+        return getattr(self, '_is_lowest_rated', False)
+
+    @is_lowest_rated.setter
+    def is_lowest_rated(self, b):
+        self._is_lowest_rated = b
+
 
 class Reply(models.Model):
     review = models.OneToOneField(to=Review, on_delete=models.DO_NOTHING)

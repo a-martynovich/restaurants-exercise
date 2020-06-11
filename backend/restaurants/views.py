@@ -103,8 +103,31 @@ class ReviewsView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request, restaurant_pk=None, format=None):
-        r = get_object_or_404(Restaurant, pk=restaurant_pk)
-        return Response(ReviewListSerializer(r).data)
+        restaurant = get_object_or_404(Restaurant, pk=restaurant_pk)
+        restaurant_reviews = restaurant.review_set
+        review_list = []
+        highest_rated = restaurant_reviews.order_by('-rating', '-timestamp').first()
+        if highest_rated:
+            highest_rated.is_highest_rated = True
+            review_list.append(highest_rated)
+        lowest_rated = restaurant_reviews.order_by('rating', '-timestamp').first()
+        if lowest_rated and lowest_rated.pk == highest_rated.pk:
+            lowest_rated = None
+        if lowest_rated:
+            lowest_rated.is_lowest_rated = True
+            review_list.append(lowest_rated)
+        latest = restaurant_reviews.order_by('-timestamp').first()
+        if latest:
+            if highest_rated.pk == latest.pk:
+                highest_rated.is_latest = True
+            elif lowest_rated and lowest_rated.pk == latest.pk:
+                lowest_rated.is_latest = True
+            else:
+                latest.is_latest = True
+                review_list.append(latest)
+        other_reviews = list(restaurant_reviews.exclude(id__in=[r.id for r in review_list]).order_by('-timestamp'))
+        reviews = [ReviewSerializer(r).data for r in review_list+other_reviews]
+        return Response({'reviews': reviews})
 
     def patch(self, request, pk=None, format=None):
         pass
@@ -117,7 +140,7 @@ class ReviewsView(APIView):
         rs = ReviewSerializer(review, data=request.data)
         if rs.is_valid(raise_exception=True):
             rs.save()
-            return Response(ReviewListSerializer(r).data)
+            return self.get(request, restaurant_pk=restaurant_pk, format=format)
 
     def delete(self, request, pk=None, format=None):
         pass
