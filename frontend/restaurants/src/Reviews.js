@@ -34,6 +34,7 @@ export function Reviews({restaurantId}) {
             isHighest={r.is_highest_rated}
             isLowest={r.is_lowest_rated}
             key={r.id}
+            restaurantId={r.restaurant}
         />)}
       </>
   )

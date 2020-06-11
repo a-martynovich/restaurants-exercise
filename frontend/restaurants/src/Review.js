@@ -1,11 +1,94 @@
 import React, {useContext, useState} from "react";
+import { parseISO, format } from 'date-fns';
 
 import {Stars} from "./Stars";
-import {Badge, Button, Card, Col, Form, Row} from "react-bootstrap";
+import {Badge, Button, Card, Col, Form, Modal, Row} from "react-bootstrap";
 import {EditIcon} from "./EditIcon";
 import {LoginContext} from "./Login";
 import {queryCache, useMutation} from "react-query";
 import {fetchJSON} from "./Fetch";
+import DatePicker from "react-datepicker";
+
+
+function EditReview({id, shown, onClose, data}) {
+  const [startDate, setStartDate] = useState(parseISO(data.lastVisit));
+  const [comment, setComment] = useState(data.comment);
+  const [rating, setRating] = useState(data.rating);
+  const [mutate] = useMutation(async (e) => {
+    console.log(e);
+    let res = await fetchJSON({
+        method: 'PATCH',
+        url: `reviews/${e.id}/`,
+        body: e.body
+      });
+      return res.reviews;
+  }, {
+    onSuccess: async (replyData) => {
+      console.log(replyData);
+      queryCache.setQueryData(['reviews', {id: data.restaurantId}], replyData);
+      await queryCache.refetchQueries(['restaurant', {id: data.restaurantId}]);
+      onClose();
+    }
+  });
+
+  const formRef = React.createRef();
+  const onSubmit = async (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    let formData = Object.fromEntries(new FormData(formRef.current));
+    formData.rating = rating;
+    formData.restaurant = data.restaurantId;
+    await mutate({
+      id,
+      body: formData
+    });
+  };
+  const onTextChange = (e) => {
+    setComment(e.target.value);
+    console.log((startDate && comment && rating));
+  };
+  const submitAllowed = !!(startDate && comment && rating);
+
+  return (
+    <Modal show={shown} onHide={onClose} centered size="lg">
+      <Modal.Header closeButton>
+        <Modal.Title>Edit Review</Modal.Title>
+      </Modal.Header>
+      <Modal.Body>
+        {data &&
+        <Form onSubmit={onSubmit} ref={formRef} name="review">
+        <Row className="mb-2">
+          <Col>
+            <span className="d-flex flex-nowrap d-inline-flex mr-2">
+              <Stars onSelect={setRating} initialRating={rating}/>
+            </span>
+            <DatePicker selected={startDate} onChange={date => setStartDate(date)}
+                                    dateFormat="yyyy-MM-dd"
+                                    todayButton="Today" placeholderText="Last visit date" maxDate={new Date()}
+                                    className="form-control border-primary d-inline-flex" name="visited_at"/>
+          </Col>
+        </Row>
+        <Row className="container">
+          <Form.Group className="w-100">
+            {/*<label htmlFor="exampleFormControlTextarea1">Review:</label>*/}
+            <Form.Control as="textarea" className="w-100 border-primary" rows="3" placeholder="Tell us what you think"
+                          onChange={onTextChange} defaultValue={comment} name="comment"/>
+          </Form.Group>
+        </Row>
+        </Form>
+        }
+      </Modal.Body>
+      <Modal.Footer>
+        <Button variant="secondary" onClick={onClose}>
+          Close
+        </Button>
+        <Button variant="primary" onClick={onSubmit} disabled={!submitAllowed}>
+          Submit
+        </Button>
+      </Modal.Footer>
+    </Modal>
+  )
+}
 
 
 function AddReply({reviewId}) {
@@ -39,13 +122,20 @@ function AddReply({reviewId}) {
   )
 }
 
-export function Review({id, rating, lastVisit, userName, userHash, timestamp, comment,
+export function Review({id, restaurantId, rating, lastVisit, userName, userHash, timestamp, comment,
                        ownerReplyComment, ownerReplyTimestamp, isLatest, isHighest, isLowest}) {
   const ctx = useContext(LoginContext);
+  const [showEdit, setShowEdit] = useState(false);
   const isOwner = ctx.role=='owner', isAdmin = ctx.role=='admin';
+  const onDelete = () => {
+
+  }
 
   return (
     <Card className="border-left-0 border-right-0 border-top-0">
+      {showEdit && <EditReview  shown={showEdit} id={id} data={{lastVisit, rating, comment, restaurantId}}
+                                onClose={() => setShowEdit(false)}/>}
+
       <Row noGutters>
         <Col md={2} className="pl-3 pt-3 mr-3">
           <img src={`https://www.gravatar.com/avatar/${userHash}?s=100`}
@@ -63,7 +153,9 @@ export function Review({id, rating, lastVisit, userName, userHash, timestamp, co
             <small className="float-right mt-1"><b>Last Visit:</b> {lastVisit}</small>
             <Card.Text className="mb-1"><small>
               {comment}
-              {isAdmin && <EditIcon className="d-inline pl-2"/>}
+              {isAdmin && <EditIcon className="d-inline pl-2"
+                                    onEdit={() => setShowEdit(true)}
+                                    onDelete={onDelete}/>}
             </small></Card.Text>
             <Card.Text className="align-bottom mb-0">
               <small className="text-muted">{timestamp}</small>

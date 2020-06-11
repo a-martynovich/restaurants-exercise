@@ -156,9 +156,14 @@ class ReviewsView(APIView):
         reviews = [ReviewSerializer(r).data for r in review_list+other_reviews]
         return Response({'reviews': reviews})
 
-    def patch(self, request, pk=None, format=None):
+    def patch(self, request, restaurant_pk=None, format=None):
         if not request.user.has_perm('restaurants.can_edit'):
             return Response(status.HTTP_403_FORBIDDEN)
+        r = get_object_or_404(Review, id=restaurant_pk)
+        s = ReviewSerializer(r, data=request.data)
+        if s.is_valid(raise_exception=True):
+            s.save()
+        return self.get(request, restaurant_pk=r.restaurant.pk, format=format)
 
     def post(self, request, restaurant_pk=None, format=None):
         if not request.user.has_perm('restaurants.can_add_review'):
