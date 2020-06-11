@@ -113,7 +113,7 @@ function EditUser({shown, id, onClose, info}) {
 }
 
 
-function User({id, userHash, userName, lastName, email}) {
+function User({id, userHash, userName, lastName, email, role}) {
   const [deleteShow, setDeleteShow] = useState(false);
   const [editShow, setEditShow] = useState(false);
 
@@ -135,7 +135,7 @@ function User({id, userHash, userName, lastName, email}) {
                 {userName} {lastName}
               </Col>
               <Col className="small text-right text-muted">
-                Visitor
+                {role}
               </Col>
               </Row>
             </Card.Title>
@@ -181,6 +181,7 @@ export function Users() {
       {
         status=='success' &&
           (data? data.map(u =><User id={u.id}
+                                    role={u.role}
                                     userName={u.first_name}
                                     userHash={u.email_hash}
                                     lastName={u.last_name} email={u.email}/>):
