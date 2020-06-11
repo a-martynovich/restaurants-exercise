@@ -82,7 +82,10 @@ class RestaurantsView(APIView):
             rating = request.query_params.get('rating')
             if rating:
                 restaurants = restaurants.filter(rating__gte=rating)
-            return Response({'restaurants': [RestaurantSerializer(r).data for r in restaurants]})
+            data = [RestaurantSerializer(r).data for r in restaurants]
+            if request.user.has_perm('restaurants.can_add_reply'):
+                data.sort(key=lambda x: x['awaits_reply'], reverse=True)
+            return Response({'restaurants': data})
 
     def patch(self, request, pk=None, format=None):
         pass

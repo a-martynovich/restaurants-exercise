@@ -1,12 +1,12 @@
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faComment, faMapMarkerAlt} from "@fortawesome/free-solid-svg-icons";
+import {faComment, faMapMarkerAlt, faBell} from "@fortawesome/free-solid-svg-icons";
 import React from "react";
 
 import {Stars} from "./Stars";
 import {Card, Col, Row} from "react-bootstrap";
 
 
-export function RestaurantCard({id, name, address, summary, reviews_count, average_rating, onClick}) {
+export function RestaurantCard({id, name, address, summary, reviews_count, average_rating, bell, onClick}) {
   return (
       <Card className="mb-3 shadow-sm restaurants-card">
         <Row>
@@ -33,6 +33,9 @@ export function RestaurantCard({id, name, address, summary, reviews_count, avera
                   <FontAwesomeIcon icon={faComment} className="mr-2" />
                   {reviews_count}
                 </small>
+                {bell && <small  className="text-muted float-right pt-1">
+                  <FontAwesomeIcon icon={faBell} color="orange" className="mr-2" />
+                </small>}
               </Card.Text>
             </Card.Body>
           </Col>

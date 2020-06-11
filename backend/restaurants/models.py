@@ -36,6 +36,10 @@ class Restaurant(models.Model):
         rating = self.review_set.aggregate(Avg('rating'))['rating__avg']
         return round(rating, 1) if rating is not None else None
 
+    @property
+    def awaits_reply(self):
+        return self.review_set.filter(reply__isnull=True).exists()
+
 
 class Review(models.Model):
     restaurant = models.ForeignKey(to=Restaurant, on_delete=models.DO_NOTHING)
