@@ -2,7 +2,7 @@ import React, {useContext, useState} from "react";
 import { parseISO, format } from 'date-fns';
 
 import {Stars} from "./Stars";
-import {Badge, Button, Card, Col, Form, Modal, Row} from "react-bootstrap";
+import {Alert, Badge, Button, Card, Col, Form, Modal, Row} from "react-bootstrap";
 import {EditIcon} from "./EditIcon";
 import {LoginContext} from "./Login";
 import {queryCache, useMutation} from "react-query";
@@ -122,19 +122,61 @@ function AddReply({reviewId}) {
   )
 }
 
+function DeleteReview({id, restaurantId, onClose, shown}) {
+  const [mutate] = useMutation(async (reviewid) => {
+    console.log(reviewid);
+    let res = await fetchJSON({
+        method: 'DELETE',
+        url: `reviews/${reviewid}/`,
+      });
+      return res.reviews;
+  }, {
+    onSuccess: async (replyData) => {
+      console.log(replyData);
+      queryCache.setQueryData(['reviews', {id: restaurantId}], replyData);
+      await queryCache.refetchQueries(['restaurant', {id: restaurantId}]);
+      onClose();
+    }
+  });
+  const onSubmit = async () => {
+    await mutate(id);
+  };
+
+  return (
+    <Modal show={shown} onHide={onClose} centered size="lg">
+      <Modal.Header closeButton>
+        <Modal.Title>Delete Review</Modal.Title>
+      </Modal.Header>
+      <Modal.Body>
+        <Alert variant="danger">Are you sure?</Alert>
+      </Modal.Body>
+      <Modal.Footer>
+        <Button variant="secondary" onClick={onClose}>
+          Close
+        </Button>
+        <Button variant="danger" onClick={onSubmit}>
+          Delete
+        </Button>
+      </Modal.Footer>
+    </Modal>
+  );
+}
+
 export function Review({id, restaurantId, rating, lastVisit, userName, userHash, timestamp, comment,
                        ownerReplyComment, ownerReplyTimestamp, isLatest, isHighest, isLowest}) {
   const ctx = useContext(LoginContext);
   const [showEdit, setShowEdit] = useState(false);
+  const [showDelete, setShowDelete] = useState(false);
   const isOwner = ctx.role=='owner', isAdmin = ctx.role=='admin';
   const onDelete = () => {
 
-  }
+  };
 
   return (
     <Card className="border-left-0 border-right-0 border-top-0">
       {showEdit && <EditReview  shown={showEdit} id={id} data={{lastVisit, rating, comment, restaurantId}}
                                 onClose={() => setShowEdit(false)}/>}
+      {showDelete && <DeleteReview shown={showDelete} id={id} restaurantId={restaurantId} onClose={() => setShowDelete(false)}/> }
 
       <Row noGutters>
         <Col md={2} className="pl-3 pt-3 mr-3">
@@ -155,7 +197,7 @@ export function Review({id, restaurantId, rating, lastVisit, userName, userHash,
               {comment}
               {isAdmin && <EditIcon className="d-inline pl-2"
                                     onEdit={() => setShowEdit(true)}
-                                    onDelete={onDelete}/>}
+                                    onDelete={() => setShowDelete(true)}/>}
             </small></Card.Text>
             <Card.Text className="align-bottom mb-0">
               <small className="text-muted">{timestamp}</small>

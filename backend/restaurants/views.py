@@ -175,9 +175,13 @@ class ReviewsView(APIView):
             rs.save()
             return self.get(request, restaurant_pk=restaurant_pk, format=format)
 
-    def delete(self, request, pk=None, format=None):
+    def delete(self, request, restaurant_pk=None, format=None):
         if not request.user.has_perm('restaurants.can_edit'):
             return Response(status.HTTP_403_FORBIDDEN)
+        r = get_object_or_404(Review, pk=restaurant_pk)
+        restaurant_pk = r.restaurant.pk
+        r.delete()
+        return self.get(request, restaurant_pk=restaurant_pk, format=format)
 
 
 class ReplyView(APIView):
