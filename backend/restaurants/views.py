@@ -214,7 +214,7 @@ class UsersView(APIView):
     def get(self, request, pk=None, format=None):
         if not request.user.has_perm('restaurants.can_edit'):
             return Response(status.HTTP_403_FORBIDDEN)
-        users = list(User.objects.all())
+        users = list(User.objects.order_by('first_name', 'last_name'))
         data = [UserSerializer(u).data for u in users]
         for d in data:
             d['email_hash'] = hashlib.md5(d['email'].encode()).hexdigest()

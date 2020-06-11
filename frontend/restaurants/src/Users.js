@@ -1,5 +1,5 @@
 import React, {createRef, useContext, useEffect, useState} from 'react';
-import {Row, Col, Container, Card, Alert, Modal, Button} from 'react-bootstrap'
+import {Row, Col, Container, Card, Alert, Modal, Button, Form} from 'react-bootstrap'
 import {faComment, faMapMarkerAlt} from "@fortawesome/free-solid-svg-icons";
 import {queryCache, useMutation, useQuery} from "react-query";
 import {EditIcon} from "./EditIcon";
@@ -48,13 +48,78 @@ function DeleteUser({id, onClose, onDelete, shown}) {
 }
 
 
+function EditUser({shown, id, onClose, data}) {
+  const formRef = React.createRef();
+  const [mutate] = useMutation(async (req) => {
+    console.log(req);
+    let res = await fetchJSON({
+        method: 'PATCH',
+        url: `users/${req.id}/`,
+        body: req.body
+      });
+      return res;
+  }, {
+    onSuccess: async (data) => {
+      // await queryCache.setQueryData(['restaurant', { id }], data);
+      await queryCache.refetchQueries('users');
+      onClose();
+    }
+  });
+  const onSubmit = async () => {
+    let data = Object.fromEntries(new FormData(formRef.current));
+    data.id = id;
+    data.username = data.email;
+    await mutate({body: data, id: id});
+  };
+
+  return (
+    <Modal show={shown} onHide={onClose} centered size="lg">
+      <Modal.Header closeButton>
+        <Modal.Title>Edit User</Modal.Title>
+      </Modal.Header>
+      <Modal.Body>
+        {data && <Form ref={formRef}>
+          <Form.Group as={Row}>
+            <Form.Label column sm={3} md={3} lg={3}>First Name: </Form.Label>
+            <Col>
+              <Form.Control type="text" name="first_name" defaultValue={data.userName} required/>
+            </Col>
+          </Form.Group>
+          <Form.Group as={Row}>
+            <Form.Label column sm={3} md={3} lg={3}>Last Name: </Form.Label>
+            <Col>
+              <Form.Control type="text" name="last_name" defaultValue={data.lastName} required/>
+            </Col>
+          </Form.Group>
+          <Form.Group as={Row}>
+            <Form.Label column sm={3} md={3} lg={3}>Email: </Form.Label>
+            <Col>
+              <Form.Control type="email" name="email" defaultValue={data.email} required/>
+            </Col>
+          </Form.Group>
+        </Form>}
+      </Modal.Body>
+      <Modal.Footer>
+        <Button variant="secondary" onClick={onClose}>
+          Close
+        </Button>
+        <Button variant="primary" onClick={onSubmit}>
+          Submit
+        </Button>
+      </Modal.Footer>
+    </Modal>
+  )
+}
+
 
 function User({id, userHash, userName, lastName, email}) {
   const [deleteShow, setDeleteShow] = useState(false);
+  const [editShow, setEditShow] = useState(false);
 
   return (
     <Card className="mb-3 shadow-sm bg-light">
       {deleteShow && <DeleteUser shown={deleteShow} id={id} onClose={() => setDeleteShow(false)}/> }
+      {editShow && <EditUser shown={editShow} id={id} onClose={() => setEditShow(false)} data={{id, userName, lastName, email}}/> }
       <Row noGutters>
         <Col md={2} className="p-3 align-self-center">
           <img src={`https://www.gravatar.com/avatar/${userHash}?s=100`}
@@ -79,7 +144,9 @@ function User({id, userHash, userName, lastName, email}) {
             <Card.Text>
               <Row>
                 <Col>
-                  <EditIcon className="small" onDelete={() => setDeleteShow(true)}/>
+                  <EditIcon className="small"
+                            onDelete={() => setDeleteShow(true)}
+                            onEdit={() => setEditShow(true)}/>
                 </Col>
                 <Col>
                   <small className="text-muted float-right pt-1">
