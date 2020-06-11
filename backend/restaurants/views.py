@@ -71,11 +71,6 @@ class UserView(APIView):
             return Response(status.HTTP_403_FORBIDDEN)
 
 
-class UsersView(APIView):
-    authentication_classes = [SessionAuthentication]
-    permission_classes = [IsAuthenticated]
-
-
 class LogOutView(APIView):
     def delete(self, request, format=None):
         logout(request)
